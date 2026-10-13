@@ -1,0 +1,5066 @@
+
+if not LPH_OBFUSCATED and not LPH_ENCNUM then
+    local assert = assert
+    local type = type
+    local setfenv = setfenv
+
+    LPH_ENCNUM = function(toEncrypt, ...)
+        assert(
+            type(toEncrypt) == 'number' and #{ ... } == 0,
+            'LPH_ENCNUM only accepts a single constant double or integer as an argument.'
+        )
+        return toEncrypt
+    end
+    LPH_NUMENC = LPH_NUMENC or LPH_ENCNUM
+
+    LPH_ENCSTR = LPH_ENCSTR
+        or function(toEncrypt, ...)
+            assert(
+                type(toEncrypt) == 'string' and #{ ... } == 0,
+                'LPH_ENCSTR only accepts a single constant string as an argument.'
+            )
+            return toEncrypt
+        end
+    LPH_STRENC = LPH_STRENC or LPH_ENCSTR
+
+    LPH_ENCFUNC = LPH_ENCFUNC
+        or function(toEncrypt, encKey, decKey, ...)
+            assert(
+                type(toEncrypt) == 'function'
+                    and type(encKey) == 'string'
+                    and #{ ... } == 0,
+                'LPH_ENCFUNC accepts a constant function, constant string, and string variable as arguments.'
+            )
+            return toEncrypt
+        end
+    LPH_FUNCENC = LPH_FUNCENC or LPH_ENCFUNC
+
+    LPH_JIT = LPH_JIT
+        or function(f, ...)
+            assert(
+                type(f) == 'function' and #{ ... } == 0,
+                'LPH_JIT only accepts a single constant function as an argument.'
+            )
+            return f
+        end
+    LPH_JIT_MAX = LPH_JIT_MAX or LPH_JIT
+
+    LPH_NO_VIRTUALIZE = LPH_NO_VIRTUALIZE
+        or function(f, ...)
+            assert(
+                type(f) == 'function' and #{ ... } == 0,
+                'LPH_NO_VIRTUALIZE only accepts a single constant function as an argument.'
+            )
+            return f
+        end
+
+    LPH_NO_UPVALUES = LPH_NO_UPVALUES
+        or function(f, ...)
+            assert(
+                type(setfenv) == 'function',
+                'LPH_NO_UPVALUES can only be used on Lua versions with getfenv & setfenv'
+            )
+            assert(
+                type(f) == 'function' and #{ ... } == 0,
+                'LPH_NO_UPVALUES only accepts a single constant function as an argument.'
+            )
+            return f
+        end
+
+    LPH_CRASH = LPH_CRASH
+        or function(...)
+            assert(#{ ... } == 0, 'LPH_CRASH does not accept any arguments.')
+        end
+end
+--lph done
+
+--anti cheat bypass
+
+local ServiceManagerEnv
+for _, v in getgc(true) do
+    if type(v) == "table" and rawget(v, "vx") and rawget(v, "v") then
+        ServiceManagerEnv = v
+        break
+    end
+end
+
+local prime = 16777619
+local max32 = 4294967295
+local max16 = 65535
+
+local function GetHeartbeat(num)
+    num = tostring(num)
+    local hash = 2166136261
+    for i = 1, #num do
+        hash = bit32.band(bit32.bxor(hash, string.byte(num, i)) * prime, max32)
+    end
+    return "\n>" .. num .. "--" .. bit32.band(hash, max16)
+end
+
+local mt = getrawmetatable(ServiceManagerEnv)
+local OldIndex = mt.__index
+local OldNewIndex = mt.__newindex
+local Heartbeat = ServiceManagerEnv.s
+ServiceManagerEnv.s = nil
+
+local function doIndex(self, index)
+    if type(OldIndex) == "function" then
+        return OldIndex(self, index)
+    elseif type(OldIndex) == "table" then
+        return OldIndex[index]
+    end
+    return rawget(self, index)
+end
+
+mt.__newindex = newcclosure(function(self, index, value)
+    if index == "vx" then
+        rawset(self, index, 0)
+        return
+    elseif index == "v" then
+        rawset(self, index, "")
+        return
+    elseif index == "s" then
+        Heartbeat = GetHeartbeat(rawget(ServiceManagerEnv, "c"))
+        return
+    elseif index == "di" then
+        return
+    end
+    rawset(self, index, value)
+end)
+
+mt.__index = newcclosure(function(self, index)
+    if index == "s" then
+        return Heartbeat
+    elseif index == "di" then
+        return debug.info
+    end
+    return doIndex(self, index)
+end)
+
+rawset(ServiceManagerEnv, "vx", 0)
+rawset(ServiceManagerEnv, "v", "")
+rawset(ServiceManagerEnv, "di", debug.info)
+rawset(ServiceManagerEnv, "_G", {})
+
+warn("Anti Cheat Bypassed")
+--bypass done 
+
+local Library = loadstring(game:HttpGet("https://pastefy.app/OQY4D68a/raw"))()
+local Window = Library:Window()
+
+local games = {
+    [863266079] = "Organic/Aftermath",
+}
+getgenv().ConfigFolder = games[game.GameId] or "Organic/Aftermath"
+
+
+local Combat = Window:Page({ Name = "Combat" })
+local Legit = Window:Page({ Name = "Visuals" })
+local Skins = Window:Page({ Name = "Misc" })
+local SilentAim = Combat:Section({ Name = "Silent Aim",Side = "Left" })
+local Aimbot = Combat:Section({ Name = "Aimbot",Side = "Left" })
+local Head = Combat:Section({ Name = "Head Expander",Side = "Left" })
+local GunMods = Combat:Section({ Name = "Gun Mods",Side = "Right" })
+local LongNeck = Combat:Section({ Name = "Long Neck",Side = "Right" })
+local ChamsSection = Combat:Section({ Name = "Chams",Side = "Right" })
+local Cam = Combat:Section({ Name = "Camera",Side = "Right" })
+local Test = Legit:Section({ Name = "Humans",Side = "Left" })
+local VehicleESPSection = Legit:Section({ Name = "Vehicles",Side = "Right" })
+local LootbagESPSection = Legit:Section({ Name = "Graves",Side = "Left" })
+local AmmoESPSection = Legit:Section({ Name = "Ammo",Side = "Left" })
+local ItemsESPSection = Legit:Section({ Name = "Repair Kit",Side = "Right" })
+local WeaponsESPSection = Legit:Section({ Name = "Weapons",Side = "Right" })
+local HitsoundsSection = Combat:Section({ Name = "HitSounds",Side = "Left" })
+local Attach = Combat:Section({ Name = "Attachment Exploit",Side = "Left" })
+local Fov = Combat:Section({ Name = "Fov Exploit",Side = "Left" })
+local AntiAimSection = Skins:Section({ Name = "Anti Aim",Side = "Right" })
+
+do
+    local miscFolder      = workspace.world_assets.StaticObjects.Misc
+    local gunDataFolder   = game:GetService("ReplicatedStorage").GunSystemAssets.GunData
+    local RunService      = game:GetService("RunService")
+    local Players         = game:GetService("Players")
+    local camera          = workspace.CurrentCamera
+    local LocalPlayer     = Players.LocalPlayer
+
+    local meleeBlacklist = {
+        AxeFire = true, ChemLight = true, Cleaver = true, CombatKnife = true,
+        Crowbar = true, HandSaw = true, Shovel = true, KitchenKnife = true,
+        GrenadeSmokeMakeshift = true, GrenadeSmoke = true, AxeMakeshift = true,
+        Cuffs = true, Fists = true, GenericItemThrow = true, Generic_consumable = true,
+        GrenadeFrag = true, GrenadeGas = true, GrenadeMolotov = true,
+        GrenadePipebomb = true, Snowball = true, ThrowableBottle = true,
+        Wrench = true, SteakKnife = true,
+    }
+
+    weaponESP = weaponESP or {
+        Enabled = false,
+        Size = 16,
+        Color = Color3.fromRGB(255, 255, 255),
+        ExcludeMelee = true,
+        ShowDistance = true,
+        RenderRange = 10000,
+        Font = 'Code',
+        Active = {},
+    }
+
+    local function createWeaponBillboard(model, gunName)
+        if weaponESP.Active[model] then return weaponESP.Active[model] end
+        
+        local handle = model:FindFirstChild("Handle")
+        if not (handle and handle:IsA("BasePart")) then return end
+        
+        local billboard = Instance.new('BillboardGui')
+        billboard.Name = 'WeaponESP'
+        billboard.Adornee = handle
+        billboard.Size = UDim2.new(0, 200, 0, 50)
+        billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+        billboard.AlwaysOnTop = true
+        billboard.ResetOnSpawn = false
+        billboard.Parent = model
+
+        local label = Instance.new('TextLabel')
+        label.Name = 'WeaponText'
+        label.BackgroundTransparency = 1
+        label.TextColor3 = weaponESP.Color
+        label.TextSize = weaponESP.Size
+        label.Font = Enum.Font[weaponESP.Font] or Enum.Font.Code
+        label.Text = ''
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.TextWrapped = true
+        label.TextStrokeColor3 = Color3.new(0, 0, 0)
+        label.TextStrokeTransparency = 0
+        label.Parent = billboard
+
+        local data = {
+            billboard = billboard,
+            label = label,
+            model = model,
+            name = gunName,
+            handle = handle
+        }
+        weaponESP.Active[model] = data
+        return data
+    end
+
+    local function getMeshPartsInfo(model)
+        local info = {}
+        for _, child in ipairs(model:GetChildren()) do
+            if child:IsA("MeshPart") then
+                local cNames = {}
+                for _, c in ipairs(child:GetChildren()) do
+                    table.insert(cNames, c.Name)
+                end
+                table.sort(cNames)
+                table.insert(info, { Name = child.Name, MeshId = child.MeshId, ChildrenNames = cNames })
+            end
+        end
+        table.sort(info, function(a,b) return a.Name < b.Name end)
+        return info
+    end
+
+    local function meshPartsMatch(a, b)
+        if #a ~= #b then return false end
+        for i = 1, #a do
+            if a[i].Name ~= b[i].Name or a[i].MeshId ~= b[i].MeshId then
+                return false
+            end
+            local c1, c2 = a[i].ChildrenNames, b[i].ChildrenNames
+            if #c1 ~= #c2 then return false end
+            for j = 1, #c1 do
+                if c1[j] ~= c2[j] then return false end
+            end
+        end
+        return true
+    end
+
+    local function getChildrenNames(model)
+        local names = {}
+        for _, c in ipairs(model:GetChildren()) do
+            table.insert(names, c.Name)
+        end
+        table.sort(names)
+        return names
+    end
+
+    local function childrenNamesMatch(a, b)
+        if #a ~= #b then return false end
+        for i = 1, #a do
+            if a[i] ~= b[i] then return false end
+        end
+        return true
+    end
+
+    local function getDescendantsNames(model)
+        local names = {}
+        for _, d in ipairs(model:GetDescendants()) do
+            table.insert(names, d.Name)
+        end
+        table.sort(names)
+        return names
+    end
+
+    local function descendantsNamesMatch(a, b)
+        if #a ~= #b then return false end
+        for i = 1, #a do
+            if a[i] ~= b[i] then return false end
+        end
+        return true
+    end
+
+    local gunDataMeshInfos = {}
+    for _, folder in ipairs(gunDataFolder:GetChildren()) do
+        local wm = folder:FindFirstChild("WorldModel")
+        if wm then
+            gunDataMeshInfos[folder.Name] = getMeshPartsInfo(wm)
+        end
+    end
+
+    local function checkModelAgainstGunData(model)
+        if not model:IsA("Model") then return nil end
+        local meshInfo = getMeshPartsInfo(model)
+        if #meshInfo > 0 then
+            for name, refInfo in pairs(gunDataMeshInfos) do
+                if meshPartsMatch(meshInfo, refInfo) then
+                    return name
+                end
+            end
+        else
+            local childNames = getChildrenNames(model)
+            local candidates = {}
+            for name, _ in pairs(gunDataMeshInfos) do
+                local gd = gunDataFolder:FindFirstChild(name)
+                if gd and gd:FindFirstChild("WorldModel") then
+                    if childrenNamesMatch(childNames, getChildrenNames(gd.WorldModel)) then
+                        table.insert(candidates, name)
+                    end
+                end
+            end
+            if #candidates == 1 then
+                return candidates[1]
+            elseif #candidates > 1 then
+                local descNames = getDescendantsNames(model)
+                for _, name in ipairs(candidates) do
+                    if descendantsNamesMatch(descNames, getDescendantsNames(gunDataFolder[name].WorldModel)) then
+                        return name
+                    end
+                end
+            end
+        end
+        return nil
+    end
+
+    local function checkAndCreateESPForModel(model)
+        local gunName = checkModelAgainstGunData(model)
+        if gunName then
+            if weaponESP.ExcludeMelee and meleeBlacklist[gunName] then return end
+            createWeaponBillboard(model, gunName)
+        end
+    end
+
+    local function updateWeaponESP()
+        local origin = (LocalPlayer.Character and LocalPlayer.Character.PrimaryPart and LocalPlayer.Character.PrimaryPart.Position) or Camera.CFrame.Position
+        
+        for model, data in pairs(weaponESP.Active) do
+            if not data.handle or not data.handle.Parent or not model.Parent then
+                if data.billboard then
+                    pcall(function() data.billboard:Destroy() end)
+                end
+                weaponESP.Active[model] = nil
+            else
+                local dist = (data.handle.Position - origin).Magnitude
+                
+                if weaponESP.Enabled and dist <= weaponESP.RenderRange then
+                    local text = data.name
+                    if weaponESP.ShowDistance then
+                        text = string.format("%s %dm", data.name, math.floor(dist))
+                    end
+                    
+                    data.label.Text = text
+                    data.label.TextColor3 = weaponESP.Color
+                    data.label.TextSize = weaponESP.Size
+                    data.label.Font = Enum.Font[weaponESP.Font] or Enum.Font.Code
+                    
+                    local transparency = math.max(0.1, 1 - (dist / weaponESP.RenderRange))
+                    data.label.TextStrokeTransparency = 1 - transparency
+                    data.label.TextTransparency = 1 - transparency
+                    
+                    data.billboard.Enabled = true
+                else
+                    data.billboard.Enabled = false
+                end
+            end
+        end
+    end
+
+    local function initialScan()
+        for _, model in ipairs(miscFolder:GetChildren()) do
+            checkAndCreateESPForModel(model)
+        end
+    end
+
+    miscFolder.ChildAdded:Connect(function(newModel)
+        task.wait(0.1)
+        checkAndCreateESPForModel(newModel)
+    end)
+
+    local updateConn = RunService.Heartbeat:Connect(updateWeaponESP)
+
+    WeaponsESPSection:Toggle({
+        Name = "Weapon",
+        Flag = "WeaponESP",
+        Default = weaponESP.Enabled,
+        Callback = function(State)
+            weaponESP.Enabled = State
+            if State then
+                task.defer(initialScan)
+            else
+                for _, data in pairs(weaponESP.Active) do 
+                    if data.billboard then 
+                        pcall(function() data.billboard.Enabled = false end)
+                    end
+                end
+            end
+        end
+    }):Colorpicker({
+        Name = "Weapon Color",
+        Flag = "WeaponColor",
+        Default = weaponESP.Color,
+        Callback = function(Value)
+            weaponESP.Color = Value
+            for _, data in pairs(weaponESP.Active) do
+                pcall(function() 
+                    if data.label then data.label.TextColor3 = Value end
+                end)
+            end
+        end
+    })
+
+    WeaponsESPSection:Dropdown({
+        Name = "Text Font",
+        Flag = "WeaponFont",
+        Options = {
+            'Code',
+            'Arial',
+            'ArialBold',
+            'Cartoon',
+            'Fantasy',
+            'Garamond',
+            'Gotham',
+            'GothamBold',
+            'GothamMedium',
+            'GothamSemibold',
+            'Highway',
+            'Legacy',
+            'Roboto',
+            'RobotoMono',
+            'SourceSans',
+            'SourceSansBold',
+            'SourceSansItalic',
+            'SourceSansSemibold',
+        },
+        Default = 'Code',
+        Callback = function(value)
+            weaponESP.Font = value
+            for _, data in pairs(weaponESP.Active) do
+                pcall(function() 
+                    if data.label then 
+                        data.label.Font = Enum.Font[value] or Enum.Font.Code
+                    end
+                end)
+            end
+        end
+    })
+
+    WeaponsESPSection:Slider({
+        Name = "Max Distance",
+        Flag = "WeaponRenderDistance",
+        Min = 0,
+        Max = 1000,
+        Default = weaponESP.RenderRange,
+        Decimals = 1,
+        Callback = function(Value)
+            weaponESP.RenderRange = Value
+        end
+    })
+
+    if weaponESP.Enabled then
+        task.defer(initialScan)
+    end
+end
+
+do
+local flags = flags or {}
+flags.yaw = flags.yaw or false
+flags.yawmode = flags.yawmode or "Forward"
+flags.jitter_speed = flags.jitter_speed or 1
+
+local yawAngle = 0
+local yawSpeed = 5
+local yawConnection1 = nil
+local yawConnection2 = nil
+local cc = nil
+
+local function startYaw()
+    if yawConnection1 or yawConnection2 then return end
+    
+    local rs = game:GetService("RunService")
+    local lp = game:GetService("Players").LocalPlayer
+    local rep = game:GetService("ReplicatedFirst")
+    
+    task.spawn(function()
+        cc = require(rep:WaitForChild("CustomCharacter"):WaitForChild("CharacterController"):WaitForChild("CharacterPlugin"))
+        repeat task.wait() until cc.IsLoaded and cc:IsLoaded()
+    end)
+    
+    yawConnection1 = rs.Heartbeat:Connect(function(dt)
+        if not flags.yaw then return end
+        
+        if flags.yawmode == "Spin" then
+            yawAngle = (yawAngle + yawSpeed * dt) % (2 * math.pi)
+        elseif flags.yawmode == "Forward" then
+            yawAngle = 0
+        elseif flags.yawmode == "Backward" then
+            yawAngle = math.pi
+        end
+    end)
+    
+    yawConnection2 = rs.RenderStepped:Connect(function()
+        if not flags.yaw then return end
+        
+        local currentLP = game:GetService("Players").LocalPlayer
+        if cc and cc.SetYaw then
+            pcall(function()
+                cc:SetYaw(yawAngle)
+            end)
+        end
+        
+        if currentLP and currentLP:FindFirstChild("CharData") and currentLP.CharData:FindFirstChild("Yaw") then
+            currentLP.CharData.Yaw.Value = yawAngle
+        end
+        
+        if currentLP and currentLP.Character and currentLP.Character:FindFirstChild("HumanoidRootPart") then
+            currentLP.Character.HumanoidRootPart.CFrame = CFrame.new(currentLP.Character.HumanoidRootPart.Position) * CFrame.Angles(0, yawAngle, 0)
+        end
+    end)
+end
+
+local function stopYaw()
+    if yawConnection1 then
+        yawConnection1:Disconnect()
+        yawConnection1 = nil
+    end
+    if yawConnection2 then
+        yawConnection2:Disconnect()
+        yawConnection2 = nil
+    end
+    yawAngle = 0
+end
+
+
+local aa_enabled = false
+local aa_mode = "Up"
+local aa_pitch = 0
+local jitter_timer = 0
+local jitter_direction = 1
+local random_timer = 0
+local random_mode = "Up"
+local random_angle = 0
+local random_modes = {"Up", "Down", "Jitter"}
+local spin_angle = 0
+
+    AntiAimSection:Toggle({
+        Name = "Anti Aim Yaw",
+        Flag = "YawEnabled",
+        Default = false,
+        Callback = function(State)
+            flags.yaw = State
+            if State then
+                startYaw()
+            else
+                stopYaw()
+            end
+        end
+    })
+
+    AntiAimSection:Dropdown({
+        Name = "Yaw Mode",
+        Flag = "YawMode",
+        Options = {'Forward', 'Backward', 'Spin'},
+        Default = 'Forward',
+        Callback = function(Value)
+            flags.yawmode = Value
+        end
+    })
+
+    AntiAimSection:Slider({
+        Name = "Yaw Spin Speed",
+        Flag = "SpinSpeed",
+        Default = 12,
+        Min = 1,
+        Max = 12,
+        Decimals = 1,
+        Callback = function(Value)
+            yawSpeed = Value
+        end
+    })
+
+    AntiAimSection:Toggle({
+        Name = "Anti Aim",
+        Flag = "AntiAimToggle",
+        Default = false,
+        Callback = function(State)
+            aa_enabled = State
+        end
+    })
+
+    AntiAimSection:Dropdown({
+        Name = "Mode",
+        Flag = "AntiAimMode",
+        Options = {'Up', 'Down', 'Pitch', 'Jitter', 'Random'},
+        Default = 'Up',
+        Callback = function(Value)
+            aa_mode = Value
+            if aa_mode == "Random" then
+                random_mode = random_modes[math.random(1, #random_modes)]
+                random_angle = math.random() * 2 * math.pi
+            end
+        end
+    })
+
+    AntiAimSection:Slider({
+        Name = "Pitch",
+        Flag = "AntiAimPitch",
+        Default = 0,
+        Min = -3.14,
+        Max = 3.14,
+        Decimals = 0.1,
+        Callback = function(Value)
+            aa_pitch = Value
+        end
+    })
+
+    AntiAimSection:Slider({
+        Name = "Jitter Speed",
+        Flag = "JitterSpeed",
+        Default = 1,
+        Min = 0.1,
+        Max = 1,
+        Decimals = 0.1,
+        Callback = function(Value)
+            flags.jitter_speed = Value
+        end
+    })
+
+    AntiAimSection:Slider({
+        Name = "Random Speed",
+        Flag = "RandomSpeed",
+        Default = 1,
+        Min = 0.1,
+        Max = 5,
+        Decimals = 0.1,
+        Callback = function(Value)
+            flags.random_speed = Value
+        end
+    })
+
+local old
+local success, err = pcall(function()
+    old = hookfunction(getrawmetatable(game).__index, function(self, key)
+        if not checkcaller() and key == "CFrame" and self == workspace.CurrentCamera then
+            local cf = old(self, key)
+            
+            if aa_enabled then
+                local calling_script = getcallingscript()
+                if calling_script and calling_script.Name == "CharacterController" then
+                    if aa_mode == "Up" then
+                        return CFrame.new(cf.Position, cf.Position + Vector3.new(0, 1, 0))
+                    elseif aa_mode == "Down" then
+                        return CFrame.new(cf.Position, cf.Position + Vector3.new(0, -1, 0))
+                    elseif aa_mode == "Pitch" then
+                        return CFrame.new(cf.Position, cf.Position + Vector3.new(math.sin(aa_pitch), math.cos(aa_pitch), 0))
+                    elseif aa_mode == "Jitter" then
+                        local speed = flags.jitter_speed or 1
+                        jitter_timer = jitter_timer + speed
+                        if jitter_timer >= 5 then
+                            jitter_timer = 0
+                            jitter_direction = jitter_direction * -1
+                        end
+                        return CFrame.new(cf.Position, cf.Position + Vector3.new(0, jitter_direction, 0))
+                    elseif aa_mode == "Random" then
+                        local speed = flags.random_speed or 1
+                        random_timer = random_timer + speed
+                        
+                        if random_timer >= 2 then
+                            random_timer = 0
+                            random_mode = random_modes[math.random(1, #random_modes)]
+                            random_angle = math.random() * 2 * math.pi
+                        end
+                        
+                        if random_mode == "Up" then
+                            return CFrame.new(cf.Position, cf.Position + Vector3.new(0, 1, 0))
+                        elseif random_mode == "Down" then
+                            return CFrame.new(cf.Position, cf.Position + Vector3.new(0, -1, 0))
+                        elseif random_mode == "Jitter" then
+                            local speed = flags.jitter_speed or 1
+                            jitter_timer = jitter_timer + speed
+                            if jitter_timer >= 5 then
+                                jitter_timer = 0
+                                jitter_direction = jitter_direction * -1
+                            end
+                            return CFrame.new(cf.Position, cf.Position + Vector3.new(0, jitter_direction, 0))
+                        end
+                    end
+                end
+            end
+            
+            return cf
+        end
+        return old(self, key)
+    end)
+end)
+end
+
+do
+    local Players = game:GetService("Players")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+    local ReticleMap = {
+        ["ACOG Sight"] = "ACOG",
+        ["16× Sniper Scope"] = "SniperScope16xStatic",
+        ["8× Sniper Scope"] = "SniperScope8x",
+        ["Red Dot Sight"] = "RedDot",
+        ["Holographic Sight"] = "Holo",
+        ["Reflex Sight"] = "ReflexRifle",
+        ["LPVO"] = "LPVOScope",
+    }
+
+    local ReticleLabels = {
+        "ACOG Sight",
+        "16× Sniper Scope",
+        "8× Sniper Scope",
+        "Red Dot Sight",
+        "Holographic Sight",
+        "Reflex Sight",
+        "LPVO"
+    }
+
+    local SlotMap = {
+        ["Slot 1"] = 1,
+        ["Slot 2"] = 2,
+        ["Slot 3"] = 3
+    }
+
+    local SlotLabels = { "Slot 1", "Slot 2", "Slot 3" }
+
+    local chosenReticle = ReticleLabels[1]
+    local chosenSlot = SlotLabels[1]
+    local enableAttachments = false
+
+    Attach:Toggle({
+        Name = "Attachments",
+        Flag = "Enable_Attachments",
+        Default = false,
+        Callback = function(Value)
+            enableAttachments = Value
+        end
+    })
+
+    Attach:Dropdown({
+        Name = "Select Attachment",
+        Flag = "Select_Reticle",
+        Options = ReticleLabels,
+        Default = chosenReticle,
+        Callback = function(Value)
+            chosenReticle = Value
+        end
+    })
+
+    Attach:Dropdown({
+        Name = "Select Slot",
+        Flag = "Select_Slot",
+        Options = SlotLabels,
+        Default = chosenSlot,
+        Callback = function(Value)
+            chosenSlot = Value
+        end
+    })
+
+    Attach:Button({
+        Name = "Apply Attachments",
+        Flag = "Apply_Attachments",
+        Callback = function()
+            if not enableAttachments then return end
+
+            local player = Players.LocalPlayer
+            if not player then return end
+
+            local invFolder = player:FindFirstChild("GunInventory")
+            if not invFolder then return end
+
+            local validSlots = {}
+            for _, ov in ipairs(invFolder:GetChildren()) do
+                if ov:IsA("ObjectValue") and ov.Value then
+                    table.insert(validSlots, ov)
+                end
+            end
+
+            local slotIndex = SlotMap[chosenSlot]
+            local slotOV = validSlots[slotIndex]
+            if not slotOV then return end
+
+            local gunSystemAssets = ReplicatedStorage:FindFirstChild("GunSystemAssets")
+            if not gunSystemAssets then return end
+
+            local attachmentsFolder = gunSystemAssets:FindFirstChild("Attachments")
+            if not attachmentsFolder then return end
+
+            local function apply(map, label, field)
+                if not label then return end
+                local assetName = map[label]
+                if not assetName then return end
+                local asset = attachmentsFolder:FindFirstChild(assetName)
+                if not asset then return end
+                local ov = slotOV:FindFirstChild(field)
+                if not ov then return end
+                ov.Value = asset
+            end
+
+            apply(ReticleMap, chosenReticle, "AttachmentReticle")
+        end
+    })
+end
+
+
+do
+chamsenabled = false
+chamsmaterial = Enum.Material.ForceField
+chamscolor = Color3.fromRGB(255, 0, 0)
+headtransparency = 0.5
+rainbowChams = false
+rainbowSpeed = 1
+
+storedSurfaceAppearances = {}
+storedMeshParts = {}
+
+
+
+local custommeshcharacter = require(game.ReplicatedFirst.GunSystemPlugins.CustomMeshCharacter)
+local playerlist = require(game.ReplicatedStorage.CustomCharacter.PlayerList)
+
+
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+
+local function GetPlayerFromEntity(entity)
+    if not entity then return nil end
+    
+    local char = custommeshcharacter:GetCharacterFromWorldCharacter(entity)
+    if not char then return nil end
+    
+    local playerdata = playerlist:GetPlayerFromCharacter(char)
+    if playerdata and playerdata.Name then
+        return Players:FindFirstChild(playerdata.Name)
+    end
+    
+    return nil
+end
+
+local function getRainbowColor(offset)
+    local time = tick() * rainbowSpeed
+    return Color3.fromHSV((time + (offset or 0)) % 1, 1, 1)
+end
+
+local function processCharacterPart(descendant)
+    if descendant:IsA("MeshPart") then
+        if chamsenabled then
+            if not storedMeshParts[descendant] then
+                storedMeshParts[descendant] = {
+                    Material = descendant.Material,
+                    Color = descendant.Color,
+                    TextureID = descendant.TextureID
+                }
+            end
+            descendant.Material = chamsmaterial
+            if rainbowChams then
+                descendant.Color = getRainbowColor()
+            else
+                descendant.Color = chamscolor
+            end
+            descendant.TextureID = ""
+        else
+            if storedMeshParts[descendant] then
+                descendant.Material = storedMeshParts[descendant].Material
+                descendant.Color = storedMeshParts[descendant].Color
+                descendant.TextureID = storedMeshParts[descendant].TextureID
+                storedMeshParts[descendant] = nil
+            end
+        end
+    end
+    
+    if descendant:IsA("SurfaceAppearance") then
+        if chamsenabled then
+            if not storedSurfaceAppearances[descendant] then
+                storedSurfaceAppearances[descendant] = {
+                    Parent = descendant.Parent,
+                    ColorMap = descendant.ColorMap,
+                    MetalnessMap = descendant.MetalnessMap,
+                    NormalMap = descendant.NormalMap,
+                    RoughnessMap = descendant.RoughnessMap
+                }
+            end
+            descendant.Parent = nil
+        else
+            if storedSurfaceAppearances[descendant] then
+                local data = storedSurfaceAppearances[descendant]
+                descendant.ColorMap = data.ColorMap
+                descendant.MetalnessMap = data.MetalnessMap
+                descendant.NormalMap = data.NormalMap
+                descendant.RoughnessMap = data.RoughnessMap
+                descendant.Parent = data.Parent
+                storedSurfaceAppearances[descendant] = nil
+            end
+        end
+    end
+end
+
+local function applyToPlayerCharacter(entity)
+    if not entity then return end
+    
+    local head = entity:FindFirstChild("Head")
+    if head and head:IsA("BasePart") then
+        if chamsenabled then
+            if not storedMeshParts[head] then
+                storedMeshParts[head] = {
+                    Material = head.Material,
+                    Color = head.Color,
+                    Transparency = head.Transparency
+                }
+            end
+            head.Material = chamsmaterial
+            if rainbowChams then
+                head.Color = getRainbowColor(0.5)
+            else
+                head.Color = chamscolor
+            end
+            head.Transparency = headtransparency
+        else
+            if storedMeshParts[head] then
+                head.Material = storedMeshParts[head].Material
+                head.Color = storedMeshParts[head].Color
+                head.Transparency = storedMeshParts[head].Transparency
+                storedMeshParts[head] = nil
+            end
+        end
+    end
+    
+    for _, descendant in pairs(entity:GetDescendants()) do
+        processCharacterPart(descendant)
+    end
+    
+    if not chamsenabled then
+        storedSurfaceAppearances = {}
+    end
+    
+    entity.DescendantAdded:Connect(processCharacterPart)
+end
+
+local function getPlayerEntity()
+    if lp and lp.Character then
+        local hrp = lp.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            return lp.Character
+        end
+    end
+    
+    local gameassets = workspace:FindFirstChild("game_assets")
+    local entitiesfolder = gameassets and gameassets:FindFirstChild("Entities")
+    local searchFolder = entitiesfolder or workspace
+    
+    for _, entity in ipairs(searchFolder:GetDescendants()) do
+        local player = GetPlayerFromEntity(entity)
+        if player and player == lp then
+            return entity
+        end
+    end
+    
+    if searchFolder ~= workspace then
+        for _, entity in ipairs(workspace:GetDescendants()) do
+            local player = GetPlayerFromEntity(entity)
+            if player and player == lp then
+                return entity
+            end
+        end
+    end
+    
+    return nil
+end
+
+function checkAndApplyChams()
+    local entity = getPlayerEntity()
+    if entity then
+        applyToPlayerCharacter(entity)
+    end
+end
+
+task.spawn(function()
+    while true do
+        task.wait(1)
+        if chamsenabled then
+            checkAndApplyChams()
+        end
+    end
+end)
+
+
+checkAndApplyChams()
+
+
+lp.CharacterAdded:Connect(function()
+    storedSurfaceAppearances = {}
+    storedMeshParts = {}
+    task.wait(0.5)
+    checkAndApplyChams()
+end)
+
+
+ChamsSection:Toggle({
+    Name = "Self Chams",
+    Flag = "PlayerChams",
+    Default = false,
+    Callback = function(bool)
+        chamsenabled = bool
+        checkAndApplyChams()
+    end
+}):Colorpicker({
+    Name = "Chams Color",
+    Flag = "ChamsColor",
+    Default = Color3.fromRGB(255, 0, 0),
+    Callback = function(color)
+        chamscolor = color
+        if not rainbowChams then
+            checkAndApplyChams()
+        end
+    end
+})
+
+ChamsSection:Toggle({
+    Name = "Rainbow Chams",
+    Flag = "RainbowChams",
+    Default = false,
+    Callback = function(bool)
+        rainbowChams = bool
+        checkAndApplyChams()
+    end
+})
+
+ChamsSection:Dropdown({
+    Name = "Chams Material",
+    Flag = "ChamsMaterial",
+    Options = {
+        "ForceField", 
+        "Neon", 
+        "Glass", 
+        "SmoothPlastic", 
+        "Metal", 
+        "Plastic", 
+        "Ice", 
+        "Foil"
+    },
+    Default = "ForceField",
+    Callback = function(selected)
+        chamsmaterial = Enum.Material[selected]
+        checkAndApplyChams()
+    end
+})
+
+ChamsSection:Slider({
+    Name = "ChamsTransparency",
+    Flag = "HeadTransparency",
+    Default = 0.5,
+    Min = 0,
+    Max = 1,
+    Decimals = 0.1,
+    Callback = function(value)
+        headtransparency = value
+        checkAndApplyChams()
+    end
+})
+
+local RunService = game:GetService("RunService")
+gunChamsEnabled = false
+gunChamsColor = Color3.fromRGB(255, 255, 255)
+gunChamsMaterial = "ForceField"
+gunRainbowChams = false
+gunchamsenableshitnigger = nil
+local tempDescendants = {}
+local tempChildren = {}
+
+local materials = {
+    ForceField = Enum.Material.ForceField,
+    Neon = Enum.Material.Neon,
+    Glass = Enum.Material.Glass,
+    SmoothPlastic = Enum.Material.SmoothPlastic,
+    Metal = Enum.Material.Metal,
+    Plastic = Enum.Material.Plastic,
+    Ice = Enum.Material.Ice,
+    Foil = Enum.Material.Foil
+}
+
+function getDescendantsCached(parent, tbl)
+    local tbl = tbl or {}
+    table.clear(tbl)
+    local descendants = parent:GetDescendants()
+    for i = 1, #descendants do
+        tbl[i] = descendants[i]
+    end
+    return tbl
+end
+
+local function getChildrenCached(parent, tbl)
+    if not tbl then tbl = {} end
+    table.clear(tbl)
+    for i, v in ipairs(parent:GetChildren()) do
+        tbl[i] = v
+    end
+    return tbl
+end
+
+local function getRainbowColor(offset)
+    local time = tick() * rainbowSpeed
+    return Color3.fromHSV((time + (offset or 0)) % 1, 1, 1)
+end
+
+local function processdescendant(descendant)
+    if not gunChamsEnabled then return end
+    
+    if descendant:IsA("BasePart") then
+        descendant.Material = materials[gunChamsMaterial] or Enum.Material.ForceField
+        if gunRainbowChams then
+            descendant.Color = getRainbowColor()
+        else
+            descendant.Color = gunChamsColor
+        end
+    end
+    
+    if descendant:IsA("SpecialMesh") then
+        descendant.MeshId = ""
+        descendant.TextureId = ""
+    end
+    
+    if descendant:IsA("MeshPart") then
+        descendant.TextureID = ""
+    end
+    
+    if descendant:IsA("Texture") or descendant:IsA("Decal") or descendant:IsA("SurfaceAppearance") then
+        descendant:Destroy()
+    end
+end
+
+local function applytoweapon(currentweapon)
+    if not gunChamsEnabled then return end
+    
+    local parts = {
+        currentweapon:FindFirstChild("Weapon"),
+        currentweapon:FindFirstChild("AttachmentMuzzle"),
+        currentweapon:FindFirstChild("AttachmentReticle"),
+        currentweapon:FindFirstChild("AttachmentUnderbarrel")
+    }
+    
+    for _, part in pairs(parts) do
+        if part then
+            for _, descendant in pairs(part:GetDescendants()) do
+                processdescendant(descendant)
+            end
+            
+            part.DescendantAdded:Connect(function(descendant)
+                processdescendant(descendant)
+            end)
+        end
+    end
+    
+    local attachmentreticle = currentweapon:FindFirstChild("AttachmentReticle")
+    if attachmentreticle then
+        local crosshairblurfront = attachmentreticle:FindFirstChild("CrosshairBlurFront")
+        if crosshairblurfront then
+            for _, descendant in pairs(crosshairblurfront:GetDescendants()) do
+                if descendant:IsA("ImageLabel") then
+                    descendant.Visible = false
+                    break
+                end
+            end
+        end
+        
+        local attachmentcamera = attachmentreticle:FindFirstChild("AttachmentCamera")
+        if attachmentcamera then
+            local surfacegui = attachmentcamera:FindFirstChild("SurfaceGui")
+            if surfacegui then
+                local shade = surfacegui:FindFirstChild("Shade")
+                if shade then
+                    local shadeimage = shade:FindFirstChild("Shade")
+                    if shadeimage and shadeimage:IsA("ImageLabel") then
+                        shadeimage.Visible = false
+                    end
+                end
+            end
+        end
+    end
+end
+
+local function setupWeaponChanger()
+    if not gunChamsEnabled then
+        return
+    end
+
+    local cam = workspace.Camera
+    local currentGun = cam:FindFirstChild('CurrentWeapon')
+
+    if currentGun then
+        applytoweapon(currentGun)
+    end
+end
+
+local function enableGunChams()
+    gunChamsEnabled = true
+
+    local cam = workspace.Camera
+    
+    local currentGun = cam:FindFirstChild('CurrentWeapon')
+    if currentGun then
+        applytoweapon(currentGun)
+    end
+
+    gunchamsenableshitnigger = cam.ChildAdded:Connect(function(obj)
+        if obj.Name == 'CurrentWeapon' and gunChamsEnabled then
+            wait(0.1)
+            applytoweapon(obj)
+        end
+    end)
+end
+
+local function disableGunChams()
+    gunChamsEnabled = false
+
+    if gunchamsenableshitnigger then
+        gunchamsenableshitnigger:Disconnect()
+        gunchamsenableshitnigger = nil
+    end
+
+    local cam = workspace.Camera
+    local currentGun = cam:FindFirstChild('CurrentWeapon')
+    if currentGun then
+        local parts = {
+            currentGun:FindFirstChild("Weapon"),
+            currentGun:FindFirstChild("AttachmentMuzzle"),
+            currentGun:FindFirstChild("AttachmentReticle"),
+            currentGun:FindFirstChild("AttachmentUnderbarrel")
+        }
+        
+        for _, part in pairs(parts) do
+            if part then
+                for _, descendant in pairs(part:GetDescendants()) do
+                    if descendant:IsA("BasePart") then
+                        descendant.Material = Enum.Material.Plastic
+                        descendant.Color = Color3.fromRGB(255, 255, 255)
+                    end
+                end
+            end
+        end
+    end
+end
+
+ChamsSection:Toggle({
+    Name = "Gun Chams",
+    Flag = "GunChams",
+    Default = false,
+    Callback = function(State)
+        if State then
+            enableGunChams()
+        else
+            disableGunChams()
+        end
+    end
+}):Colorpicker({
+    Name = "Gun Chams Color",
+    Flag = "GunChamsColor",
+    Default = gunChamsColor,
+    Callback = function(Value)
+        gunChamsColor = Value
+        if gunChamsEnabled and not gunRainbowChams then
+            setupWeaponChanger()
+        end
+    end
+})
+
+ChamsSection:Toggle({
+    Name = "Rainbow Chams",
+    Flag = "GunRainbowChams",
+    Default = false,
+    Callback = function(bool)
+        gunRainbowChams = bool
+        if gunChamsEnabled then
+            setupWeaponChanger()
+        end
+    end
+})
+
+local selfChams = {
+    enabled = false, 
+    bodyColor = Color3.fromRGB(255, 255, 255), 
+    material = Enum.Material.ForceField, 
+    armColor = Color3.fromRGB(255, 255, 255), 
+    gunColor = Color3.fromRGB(255, 255, 255), 
+}
+
+ChamsSection:Dropdown({
+    Name = "Chams Material",
+    Flag = "ChamsMaterial",
+    Options = {
+        'ForceField', 
+        'Plastic', 
+        'SmoothPlastic', 
+        'Neon', 
+        'Glass', 
+        'Metal', 
+        'Wood', 
+        'Concrete', 
+    },
+    Default = 'ForceField',
+    Callback = function(Selected)
+        selfChams.material = Enum.Material[Selected]
+        gunChamsMaterial = Selected
+        if selfChams.enabled then
+            toggleAllChams()
+        end
+        if gunChamsEnabled then
+            setupWeaponChanger()
+        end
+    end
+})
+
+workspace.Camera.DescendantAdded:Connect(function(obj)
+    if obj.Name == 'Skin' and obj:IsA('BasePart') and selfChams.enabled then
+        task.delay(0.1, function()
+            applySkinChams()
+        end)
+    end
+end)
+
+local lastUpdate = 0
+local updateCooldown = 1
+local pendingUpdate = false
+
+local function thatjewishUpdate()
+    local now = tick()
+    if pendingUpdate or (now - lastUpdate) < updateCooldown then
+        return
+    end
+
+    pendingUpdate = true
+    lastUpdate = now
+
+    task.delay(0.5, function()
+        if selfChams.enabled then
+            toggleAllChams()
+        end
+        pendingUpdate = false
+    end)
+end
+
+local charactersFolder = workspace:FindFirstChild('Characters')
+if charactersFolder then
+    charactersFolder.ChildAdded:Connect(function(character)
+        if selfChams.enabled and character:IsA('Model') then
+            thatjewishUpdate()
+        end
+    end)
+end
+
+workspace.ChildAdded:Connect(function(child)
+    if child.Name == 'Characters' and selfChams.enabled then
+        thatjewishUpdate()
+    end
+end)
+
+    local armChamsEnabled = false
+    local armChamsColor = Color3.fromRGB(255, 255, 255)
+    local selectedMeshType = "Brick"
+    local armRainbowChams = false
+
+    local function applyArmChams()
+        if not armChamsEnabled then return end
+        
+        camera = workspace.CurrentCamera
+        if not camera then return end
+        
+        local currentWeapon = camera:FindFirstChild('CurrentWeapon')
+        if not currentWeapon then return end
+        
+        local descendants = getDescendantsCached(currentWeapon, {})
+        for _, v in ipairs(descendants) do
+            if v:IsA('BasePart') and v.Name == 'Skin' then
+                v.Material = Enum.Material.ForceField
+                if armRainbowChams then
+                    v.Color = getRainbowColor(0.3)
+                else
+                    v.Color = armChamsColor
+                end
+                v.Transparency = 0
+                
+                local children = getChildrenCached(v, {})
+                for _, child in ipairs(children) do
+                    if child:IsA('SpecialMesh') then
+                        child.MeshType = selectedMeshType
+                    end
+                end
+            end
+            
+            if v.Name == 'Shirt' then
+                v:Destroy()
+            end
+        end
+    end
+
+    local function removeArmChams()
+        camera = workspace.CurrentCamera
+        if not camera then return end
+        
+        local currentWeapon = camera:FindFirstChild('CurrentWeapon')
+        if not currentWeapon then return end
+        
+        local descendants = getDescendantsCached(currentWeapon, {})
+        for _, v in ipairs(descendants) do
+            if v:IsA('BasePart') and v.Name == 'Skin' then
+                v.Material = Enum.Material.Plastic
+                v.Transparency = 0
+            end
+        end
+    end
+
+    ChamsSection:Toggle({
+        Name = "Arm Chams",
+        Flag = "ArmChams",
+        Default = false,
+        Callback = function(State)
+            armChamsEnabled = State
+            if State then
+                applyArmChams()
+            else
+                removeArmChams()
+            end
+        end
+    }):Colorpicker({
+        Name = "Arm Chams Color",
+        Flag = "ArmChamsColor",
+        Default = Color3.fromRGB(255, 255, 255),
+        Callback = function(Value)
+            armChamsColor = Value
+            if armChamsEnabled and not armRainbowChams then
+                applyArmChams()
+            end
+        end
+    })
+
+    ChamsSection:Toggle({
+        Name = "Rainbow Chams",
+        Flag = "ArmRainbowChams",
+        Default = false,
+        Callback = function(bool)
+            armRainbowChams = bool
+            if armChamsEnabled then
+                applyArmChams()
+            end
+        end
+    })
+
+    ChamsSection:Dropdown({
+        Name = "Mesh Type",
+        Flag = "MeshType",
+        Options = {
+            'Head', 
+            'Sphere', 
+            'Cylinder', 
+            'Wedge', 
+            'Brick', 
+            'FileMesh', 
+            'Torso', 
+        },
+        Default = 'Brick',
+        Callback = function(Selected)
+            selectedMeshType = Selected
+            if armChamsEnabled then
+                applyArmChams()
+            end
+        end
+    })
+
+    RunService.RenderStepped:Connect(function()
+        if armChamsEnabled then
+            applyArmChams()
+        end
+    end)
+
+    local bodyChamsEnabled = false
+    local bodyMode = 'Body'
+    local bodyChamsColor = Color3.fromRGB(255, 255, 255)
+    local bodyRainbowChams = false
+
+    local bodyParts = {
+        "Head", "LeftFoot", "LeftHand", "LeftLowerArm", "LeftLowerLeg", 
+        "LeftUpperArm", "LeftUpperLeg", "LowerTorso", "RightFoot", 
+        "RightHand", "RightLowerArm", "RightLowerLeg", "RightUpperArm", 
+        "RightUpperLeg", "UpperTorso"
+    }
+
+    local function GetMovementPart()
+        if #updateCameraDescendantshit == 0 then
+            updateCameraDescendantshit()
+        end
+        local descendants = cameraDescendantsretarded
+        for _, Child in ipairs(descendants) do
+            if Child:IsA('MeshPart') then
+                local Size = Child.Size
+                if Size.X == 2.5 and Size.Z == 2.5 then
+                    if
+                        Size.Y == 5
+                        or Size.Y == 3.25
+                        or Size.Y == 3
+                        or Size.Y == 2
+                    then
+                        return Child
+                    end
+                end
+            end
+        end
+        return nil
+    end
+
+    local function getClosestCharacterToMovementPart()
+        local movementPart = GetMovementPart()
+        if not movementPart then return nil end
+        local closestCharacter = nil
+        local closestDistance = math.huge
+        local movementPosition = movementPart.Position
+        local entities = Workspace:FindFirstChild("game_assets") and Workspace.game_assets:FindFirstChild("Entities")
+        if not entities then return nil end
+        local tempChildren = {}
+        workspace = game:GetService('Workspace')
+        ameAssets = workspace:FindFirstChild("game_assets")
+        entities = gameAssets:FindFirstChild("Entities")
+        
+        local function getChildrenCached(parent, tbl)
+            table.clear(tbl)
+            for i, v in ipairs(parent:GetChildren()) do
+                tbl[i] = v
+            end
+            return tbl
+        end
+        
+        local children = getChildrenCached(entities, tempChildren)
+        for _, model in ipairs(children) do
+            if model:IsA("Model") and model:FindFirstChild("Head") then
+                local head = model.Head
+                local distance = (head.Position - movementPosition).Magnitude
+                if distance < closestDistance then
+                    closestDistance = distance
+                    closestCharacter = model
+                end
+            end
+        end
+        return closestCharacter
+    end
+
+    local function applyBodyChams()
+        local closest = getClosestCharacterToMovementPart()
+        if not closest then return end
+        
+        local descendants = getDescendantsCached(closest, {})
+        for _, v in ipairs(descendants) do
+            if v:IsA("BasePart") then
+                local inList = table.find(bodyParts, v.Name)
+                if (bodyMode == 'Body' and inList) or bodyMode == 'All' then
+                    v.Material = Enum.Material.ForceField
+                    if bodyRainbowChams then
+                        v.Color = getRainbowColor(0.7)
+                    else
+                        v.Color = bodyChamsColor
+                    end
+                    
+                    local childDescendants = getDescendantsCached(v, {})
+                    for _, d in ipairs(childDescendants) do
+                        if d:IsA("SurfaceAppearance") then d:Destroy() end
+                        if d:IsA("Mesh") or d:IsA("SpecialMesh") then d.MeshType = Enum.MeshType.Brick end
+                    end
+                end
+            end
+        end
+    end
+    
+    local function removeBodyChams()
+        local closest = getClosestCharacterToMovementPart()
+        if not closest then return end
+        
+        local descendants = getDescendantsCached(closest, {})
+        for _, v in ipairs(descendants) do
+            if v:IsA("BasePart") then
+                local inList = table.find(bodyParts, v.Name)
+                if (bodyMode == 'Body' and inList) or bodyMode == 'All' then
+                    v.Material = Enum.Material.Plastic
+                    v.Color = Color3.fromRGB(255, 255, 255)
+                end
+            end
+        end
+    end
+end
+
+hitsoundEnabled = false
+headshotSoundEnabled = false
+currentHitsound = 'rbxassetid://8726881116'
+currentHeadshotSound = 'rbxassetid://988593556'
+
+hitsoundNames = {
+    'Neverlose',
+    'TF2',
+    'Gamesense',
+    'Rust',
+    'Bubble',
+    'Quake',
+    'Among-Us',
+    'Ding',
+    'Minecraft',
+    'Blackout',
+    'Osu',
+	'M1 Garand',
+}
+headshotSoundNames = {
+    'Default',
+    'TF2',
+    'Gamesense',
+    'Rust',
+    'Bubble',
+    'Quake',
+    'Among-Us',
+    'Ding',
+    'Minecraft',
+    'Blackout',
+    'Osu',
+	'M1 Garand',
+}
+hitsoundOptions = {
+    ['Neverlose'] = 'rbxassetid://8726881116',
+    ['TF2'] = 'rbxassetid://8255306220',
+    ['Gamesense'] = 'rbxassetid://4817809188',
+    ['Rust'] = 'rbxassetid://1255040462',
+    ['Bubble'] = 'rbxassetid://198598793',
+    ['Quake'] = 'rbxassetid://1455817260',
+    ['Among-Us'] = 'rbxassetid://7227567562',
+    ['Ding'] = 'rbxassetid://2868331684',
+    ['Minecraft'] = 'rbxassetid://6361963422',
+    ['Blackout'] = 'rbxassetid://3748776946',
+    ['Osu'] = 'rbxassetid://7151989073',
+	['M1 Garand'] = 'rbxassetid://6111738677',
+}
+headshotSoundOptions = {
+    ['Default'] = 'rbxassetid://988593556',
+    ['TF2'] = 'rbxassetid://8255306220',
+    ['Gamesense'] = 'rbxassetid://4817809188',
+    ['Rust'] = 'rbxassetid://1255040462',
+    ['Bubble'] = 'rbxassetid://198598793',
+    ['Quake'] = 'rbxassetid://1455817260',
+    ['Among-Us'] = 'rbxassetid://7227567562',
+    ['Ding'] = 'rbxassetid://2868331684',
+    ['Minecraft'] = 'rbxassetid://6361963422',
+    ['Blackout'] = 'rbxassetid://3748776946',
+    ['Osu'] = 'rbxassetid://7151989073',
+	['M1 Garand'] = 'rbxassetid://6111738677',
+}
+
+function applyHitsound()
+    if not hitsoundEnabled then
+        return
+    end
+    hitmarker = game:GetService("ReplicatedStorage").GunSystemAssets.Sounds.DefaultHitmarker.Hitmarker 
+    if hitmarker then
+        hitmarker.SoundId = currentHitsound
+    end
+end
+
+function applyHeadshotSound()
+    if not headshotSoundEnabled then
+        return
+    end
+    headshot = game:GetService("ReplicatedStorage").GunSystemAssets.Sounds.DefaultHitmarker.Headshot
+    if headshot then
+        headshot.SoundId = currentHeadshotSound
+    end
+end
+
+HitsoundsSection:Toggle({
+    Name = "Body Hitsounds",
+    Flag = "BodyHitsounds",
+    Default = false,
+    Callback = function(State)
+        hitsoundEnabled = State
+        applyHitsound()
+    end
+})
+
+HitsoundsSection:Dropdown({
+    Name = "Hitsound",
+    Flag = "HitsoundSelect",
+    Options = hitsoundNames,
+    Default = "Neverlose",
+    Callback = function(Selected)
+        currentHitsound = hitsoundOptions[Selected]
+        applyHitsound()
+    end
+})
+
+HitsoundsSection:Toggle({
+    Name = "Headshot Sound",
+    Flag = "HeadshotSound",
+    Default = false,
+    Callback = function(State)
+        headshotSoundEnabled = State
+        applyHeadshotSound()
+    end
+})
+
+HitsoundsSection:Dropdown({
+    Name = "Headshot Sound",
+    Flag = "HeadshotSoundSelect",
+    Options = headshotSoundNames,
+    Default = "Default",
+    Callback = function(Selected)
+        currentHeadshotSound = headshotSoundOptions[Selected]
+        applyHeadshotSound()
+    end
+})
+
+task.spawn(function()
+    while true do
+        if hitsoundEnabled then
+            applyHitsound()
+        end
+        if headshotSoundEnabled then
+            applyHeadshotSound()
+        end
+        task.wait(1)
+    end
+end)
+
+local CameraFovController = require(game:GetService("ReplicatedFirst").GunSystem:WaitForChild("CameraFovController"))
+
+local fovChangerEnabled = false
+local fovValue = 90
+
+Fov:Toggle({
+    Name = "Field-Of-View Adjustment",
+    Flag = "FovChangerEnabled",
+    Default = false,
+    Callback = function(State)
+        fovChangerEnabled = State
+        if not fovChangerEnabled then
+            CameraFovController.ClientFov = 100
+        end
+    end
+})
+
+Fov:Slider({
+    Name = "Adjustment Value",
+    Flag = "FovValue",
+    Default = 90,
+    Min = 1,
+    Max = 120,
+    Decimals = 1,
+    Callback = function(Value)
+        fovValue = Value
+        if fovChangerEnabled then
+            CameraFovController.ClientFov = fovValue
+            CameraFovController:Enable()
+        end
+    end
+})
+
+
+---
+do
+    Players = Players or game:GetService("Players")
+    LocalPlayer = Players.LocalPlayer
+    Camera = workspace.CurrentCamera
+    RunService = game:GetService('RunService')
+    CoreGui = game:GetService("CoreGui")
+
+    vehicleESP = vehicleESP or {
+        Enabled = false,    
+        ShowName = false,    
+        ShowDistance = false,    
+        ShowHealth = false,    
+        Color = Color3.fromRGB(255, 255, 255),    
+        Size = 14,    
+        RenderDistance = 10000,    
+        Active = {},    
+        WorldModelCache = setmetatable({}, {__mode = "v"}),
+        Font = Enum.Font.Code,
+    }
+
+    local function createVehicleBillboard(chassis)
+        if vehicleESP.Active[chassis] then return vehicleESP.Active[chassis] end
+        
+        local billboard = Instance.new('BillboardGui')
+        billboard.Name = 'VehicleESP'
+        billboard.Adornee = chassis
+        billboard.Size = UDim2.new(0, 200, 0, 50)
+        billboard.StudsOffset = Vector3.new(0, 3, 0)
+        billboard.AlwaysOnTop = true
+        billboard.ResetOnSpawn = false
+        billboard.Parent = chassis
+
+        local label = Instance.new('TextLabel')
+        label.Name = 'VehicleText'
+        label.BackgroundTransparency = 1
+        label.TextColor3 = vehicleESP.Color
+        label.TextSize = vehicleESP.Size
+        label.Font = vehicleESP.Font
+        label.Text = ''
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.TextWrapped = true
+        label.TextStrokeColor3 = Color3.new(0, 0, 0)
+        label.TextStrokeTransparency = 0
+        label.Parent = billboard
+
+        local data = {
+            billboard = billboard,
+            label = label,
+            chassis = chassis,
+        }
+        vehicleESP.Active[chassis] = data
+        return data
+    end
+
+    local function getVehicleHealth(chassis)
+        local chassisParent = chassis.Parent
+        if not chassisParent then
+            return nil
+        end
+
+        local x, y, z = math.floor(chassis.Position.X), math.floor(chassis.Position.Y), math.floor(chassis.Position.Z)
+        local vehicleKey = string.format('vehicle_%d_%d_%d', x, y, z)
+
+        if vehicleESP.WorldModelCache[vehicleKey] then
+            local cachedWorldModel = vehicleESP.WorldModelCache[vehicleKey]
+            if cachedWorldModel and cachedWorldModel.Parent then
+                local states = cachedWorldModel:FindFirstChild('States')
+                if states then
+                    local health = states:GetAttribute('Health')
+                    if health and health > 0 then
+                        return health
+                    end
+                end
+            else
+                vehicleESP.WorldModelCache[vehicleKey] = nil
+            end
+        end
+
+        local closestWorldModel = nil
+        local closestDistance = math.huge
+
+        for _, obj in pairs(workspace:GetChildren()) do
+            if obj.Name == 'WorldModel' and obj:IsA('Model') then
+                local states = obj:FindFirstChild('States')
+                if states then
+                    local health = states:GetAttribute('Health')
+                    if health and health > 0 then
+                        local worldModelCenter = obj:GetBoundingBox()
+                        if worldModelCenter then
+                            local distance = (worldModelCenter.Position - chassis.Position).Magnitude
+                            if distance < closestDistance and distance < 150 then
+                                closestDistance = distance
+                                closestWorldModel = obj
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        if closestWorldModel then
+            vehicleESP.WorldModelCache[vehicleKey] = closestWorldModel
+            local states = closestWorldModel:FindFirstChild('States')
+            if states then
+                local health = states:GetAttribute('Health')
+                if health and health > 0 then
+                    return health
+                end
+            end
+        end
+
+        return nil
+    end
+
+    local function scanVehicles()
+        if not vehicleESP.Enabled then return end
+        
+        for _, obj in pairs(workspace:GetChildren()) do
+            if obj:FindFirstChild('Chassis') and obj.Chassis:IsA('BasePart') and not vehicleESP.Active[obj.Chassis] then
+                createVehicleBillboard(obj.Chassis)
+            end
+        end
+    end
+
+    local function updateVehicleESP()
+        local origin = (LocalPlayer.Character and LocalPlayer.Character.PrimaryPart and LocalPlayer.Character.PrimaryPart.Position) or Camera.CFrame.Position
+        
+        for chassis, data in pairs(vehicleESP.Active) do
+            if not chassis or not chassis.Parent then
+                if data then
+                    pcall(function() 
+                        if data.billboard then data.billboard:Destroy() end
+                    end)
+                end
+                vehicleESP.Active[chassis] = nil
+            else
+                local dist = (chassis.Position - origin).Magnitude
+                local displayDist = dist / 2.56
+
+                if vehicleESP.Enabled and dist <= vehicleESP.RenderDistance then
+                    local text = ''
+                    if vehicleESP.ShowName or vehicleESP.ShowDistance then
+                        if vehicleESP.ShowName then
+                            text = 'Vehicle'
+                        end
+                        if vehicleESP.ShowDistance then
+                            local distText = string.format('%.0fm', displayDist)
+                            text = (text ~= '' and (text .. ' ' .. distText)) or distText
+                        end
+                    end
+
+                    if vehicleESP.ShowHealth then
+                        local health = getVehicleHealth(chassis)
+                        local healthText
+                        if health then
+                            healthText = string.format('HP: %.0f', health)
+                        else
+                            healthText = 'No HP'
+                        end
+                        text = text .. (text ~= '' and '\n' .. healthText or healthText)
+                    end
+
+                    if text ~= '' then
+                        data.label.Text = text
+                        data.label.TextColor3 = (string.find(text, 'No HP') and Color3.fromRGB(255, 0, 0)) or vehicleESP.Color
+                        data.label.TextSize = vehicleESP.Size
+                        data.label.Font = vehicleESP.Font
+                        
+                        -- Apply fade out on distance
+                        local transparency = math.max(0.1, 1 - (dist / vehicleESP.RenderDistance))
+                        data.label.TextStrokeTransparency = 1 - transparency
+                        data.label.TextTransparency = 1 - transparency
+                        
+                        data.billboard.Enabled = true
+                    else
+                        data.billboard.Enabled = false
+                    end
+                else
+                    data.billboard.Enabled = false
+                end
+            end
+        end
+    end
+
+    local function cleanupVehicleCache()
+        local toRemove = {}
+        for key, worldModel in pairs(vehicleESP.WorldModelCache) do
+            if not worldModel or not worldModel.Parent then
+                table.insert(toRemove, key)
+            end
+        end
+        for _, key in ipairs(toRemove) do
+            vehicleESP.WorldModelCache[key] = nil
+        end
+    end
+
+    local vehicleESPConnections = {}
+    local vehicleESPRunning = true
+
+    local function disconnectVehicleConnections()
+        for _, conn in ipairs(vehicleESPConnections) do
+            if conn then conn:Disconnect() end
+        end
+        table.clear(vehicleESPConnections)
+    end
+
+    table.insert(vehicleESPConnections, workspace.ChildAdded:Connect(function(child)
+        if not vehicleESPRunning then return end
+        if child.Name == 'WorldModel' and child:IsA('Model') then
+            task.spawn(function()
+                task.wait(0.1)
+                cleanupVehicleCache()
+            end)
+        end
+    end))
+    
+    table.insert(vehicleESPConnections, workspace.ChildRemoved:Connect(function(child)
+        if not vehicleESPRunning then return end
+        if child.Name == 'WorldModel' and child:IsA('Model') then
+            local data = vehicleESP.Active[child]
+            if data then
+                pcall(function() 
+                    if data.billboard then data.billboard:Destroy() end
+                end)
+                vehicleESP.Active[child] = nil
+            end
+        end
+    end))
+    
+    table.insert(vehicleESPConnections, workspace.ChildRemoved:Connect(function(child)
+        if not vehicleESPRunning then return end
+        if child.Name == 'WorldModel' and child:IsA('Model') then
+            cleanupVehicleCache()
+        end
+    end))
+
+    local vehicleScanInterval = 1.0
+    local lastVehicleScan = 0
+
+    table.insert(vehicleESPConnections, RunService.Heartbeat:Connect(function()
+        if not vehicleESPRunning then return end
+        local now = os.clock()
+        if vehicleESP.Enabled and (vehicleESP.ShowName or vehicleESP.ShowDistance or vehicleESP.ShowHealth) then
+            if now - lastVehicleScan >= vehicleScanInterval then
+                scanVehicles()
+                cleanupVehicleCache()
+                lastVehicleScan = now
+            end
+            updateVehicleESP()
+        else
+            for _, data in pairs(vehicleESP.Active) do
+                if data.billboard then data.billboard.Enabled = false end
+            end
+        end
+    end))
+
+    table.insert(vehicleESPConnections, Players.PlayerRemoving:Connect(function()
+        if not vehicleESPRunning then return end
+        for _, data in pairs(vehicleESP.Active) do
+            pcall(function() 
+                if data.billboard then data.billboard:Destroy() end
+            end)
+        end
+        vehicleESP.Active = {}
+        vehicleESP.WorldModelCache = setmetatable({}, {__mode = "kv"})
+    end))
+
+    VehicleESPSection:Toggle({
+        Name = "Vehicle Names",
+        Flag = "VehicleName",
+        Default = false,
+        Callback = function(State)
+            vehicleESP.ShowName = State
+            vehicleESP.Enabled = vehicleESP.ShowName or vehicleESP.ShowDistance or vehicleESP.ShowHealth
+            if State then
+                task.defer(scanVehicles)
+            end
+        end
+    }):Colorpicker({
+        Name = "Vehicle Color",
+        Flag = "VehicleColor",
+        Default = vehicleESP.Color,
+        Callback = function(Value)
+            vehicleESP.Color = Value
+            for _, data in pairs(vehicleESP.Active) do
+                pcall(function() 
+                    if data.label then data.label.TextColor3 = Value end
+                end)
+            end
+        end
+    })
+
+    VehicleESPSection:Toggle({
+        Name = "Vehicle Distance",
+        Flag = "VehicleDistance",
+        Default = false,
+        Callback = function(State)
+            vehicleESP.ShowDistance = State
+            vehicleESP.Enabled = vehicleESP.ShowName or vehicleESP.ShowDistance or vehicleESP.ShowHealth
+            if State then
+                task.defer(scanVehicles)
+            end
+        end
+    })
+
+    VehicleESPSection:Toggle({
+        Name = "Vehicle Health",
+        Flag = "VehicleHealth",
+        Default = false,
+        Callback = function(State)
+            vehicleESP.ShowHealth = State
+            vehicleESP.Enabled = vehicleESP.ShowName or vehicleESP.ShowDistance or vehicleESP.ShowHealth
+            if State then
+                task.defer(scanVehicles)
+            end
+        end
+    })
+
+    VehicleESPSection:Slider({
+        Name = "Max Distance",
+        Flag = "VehicleDistance",
+        Min = 50,
+        Max = 10000,
+        Default = vehicleESP.RenderDistance,
+        Decimals = 1,
+        Callback = function(Value)
+            vehicleESP.RenderDistance = Value
+        end
+    })
+
+    VehicleESPSection:Dropdown({
+        Name = "Text Font",
+        Flag = "VehicleFont",
+        Options = {
+            'Code',
+            'Arial',
+            'ArialBold',
+            'Cartoon',
+            'Fantasy',
+            'Garamond',
+            'Gotham',
+            'GothamBold',
+            'GothamMedium',
+            'GothamSemibold',
+            'Highway',
+            'Legacy',
+            'Roboto',
+            'RobotoMono',
+            'SourceSans',
+            'SourceSansBold',
+            'SourceSansItalic',
+            'SourceSansSemibold',
+        },
+        Default = 'Code',
+        Callback = function(value)
+            local fontMap = {
+                ['Code'] = Enum.Font.Code,
+                ['Arial'] = Enum.Font.Arial,
+                ['ArialBold'] = Enum.Font.ArialBold,
+                ['Cartoon'] = Enum.Font.Cartoon,
+                ['Fantasy'] = Enum.Font.Fantasy,
+                ['Garamond'] = Enum.Font.Garamond,
+                ['Gotham'] = Enum.Font.Gotham,
+                ['GothamBold'] = Enum.Font.GothamBold,
+                ['GothamMedium'] = Enum.Font.GothamMedium,
+                ['GothamSemibold'] = Enum.Font.GothamSemibold,
+                ['Highway'] = Enum.Font.Highway,
+                ['Legacy'] = Enum.Font.Legacy,
+                ['Roboto'] = Enum.Font.Roboto,
+                ['RobotoMono'] = Enum.Font.RobotoMono,
+                ['SourceSans'] = Enum.Font.SourceSans,
+                ['SourceSansBold'] = Enum.Font.SourceSansBold,
+                ['SourceSansItalic'] = Enum.Font.SourceSansItalic,
+                ['SourceSansSemibold'] = Enum.Font.SourceSansSemibold,
+            }
+            
+            local newFont = fontMap[value] or Enum.Font.Code
+            vehicleESP.Font = newFont
+            
+            for _, data in pairs(vehicleESP.Active) do
+                pcall(function() 
+                    if data.label then data.label.Font = newFont end
+                end)
+            end
+        end
+    })
+    
+    local lastCacheCleanup = 0
+    table.insert(vehicleESPConnections, RunService.Heartbeat:Connect(function()
+        if not vehicleESPRunning then return end
+        local now = os.clock()
+        if now - lastCacheCleanup >= 5 then
+            cleanupVehicleCache()
+            lastCacheCleanup = now
+        end
+    end))
+    
+    local originalDestroy = VehicleESPSection.Destroy
+    VehicleESPSection.Destroy = function(self)
+        vehicleESPRunning = false
+        disconnectVehicleConnections()
+        for _, data in pairs(vehicleESP.Active) do
+            pcall(function() 
+                if data.billboard then data.billboard:Destroy() end
+            end)
+        end
+        vehicleESP.Active = {}
+        if originalDestroy then
+            originalDestroy(self)
+        end
+    end
+
+    -- Initial setup if enabled
+    if vehicleESP.Enabled then
+        task.defer(scanVehicles)
+    end
+end
+
+do
+    Players = Players or game:GetService("Players")
+    LocalPlayer = Players.LocalPlayer
+    Camera = workspace.CurrentCamera
+    RunService = game:GetService('RunService')
+    CoreGui = game:GetService("CoreGui")
+    
+    lootbagESP = lootbagESP or {
+        Enabled = false,
+        ShowName = false,
+        ShowDistance = false,
+        Color = Color3.fromRGB(255, 255, 255),
+        Size = 14,
+        RenderDistance = 10000,
+        Active = {},
+        Font = Enum.Font.Code,
+    }
+    
+    local Functions = {}
+    do
+        function Functions:Create(Class, Properties)
+            local _Instance = typeof(Class) == 'string' and Instance.new(Class) or Class
+            for Property, Value in pairs(Properties) do
+                _Instance[Property] = Value
+            end
+            return _Instance;
+        end
+        
+        function Functions:FadeOutOnDist(element, distance, maxDistance)
+            local transparency = math.max(0.1, 1 - (distance / maxDistance))
+            if element:IsA("TextLabel") then
+                element.TextTransparency = 1 - transparency
+            elseif element:IsA("ImageLabel") then
+                element.ImageTransparency = 1 - transparency
+            elseif element:IsA("UIStroke") then
+                element.Transparency = 1 - transparency
+            elseif element:IsA("Frame") then
+                element.BackgroundTransparency = 1 - transparency
+            end
+        end;
+    end
+
+    -- Create ScreenGui for ESP
+    local ScreenGui = Functions:Create("ScreenGui", {
+        Parent = CoreGui,
+        Name = "LootbagESPHolder",
+        Enabled = false
+    })
+    
+    local function getgravename(gravemodel)
+        local playergrave = gravemodel:FindFirstChild("PlayerGrave")
+        if not playergrave then return "Unknown Grave" end
+
+        for _, descendant in ipairs(playergrave:GetDescendants()) do
+            if descendant:IsA("MeshPart") and descendant:GetAttribute("DisplayName") then
+                local displayname = descendant:GetAttribute("DisplayName")
+                return displayname
+            end
+        end
+
+        return "Unknown Grave"
+    end
+    
+    local function createLootbagESP(trashBag)
+        if lootbagESP.Active[trashBag] then return end
+
+        local graveModel = trashBag:FindFirstAncestor("Default")
+        local graveName = graveModel and getgravename(graveModel) or "Unknown Grave"
+        
+        local EntityFolder = Functions:Create("Folder", {
+            Parent = ScreenGui,
+            Name = tostring(trashBag)
+        })
+        
+        local textLabel = Functions:Create("TextLabel", {
+            Parent = EntityFolder,
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            Size = UDim2.new(0, 200, 0, 50),
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            BackgroundTransparency = 1,
+            TextColor3 = lootbagESP.Color,
+            Font = lootbagESP.Font,
+            TextSize = lootbagESP.Size,
+            TextStrokeTransparency = 0,
+            TextStrokeColor3 = Color3.fromRGB(0, 0, 0),
+            RichText = true,
+            Visible = false
+        })
+        
+        lootbagESP.Active[trashBag] = {
+            folder = EntityFolder,
+            textLabel = textLabel,
+            graveName = graveName,
+            trashBag = trashBag
+        }
+        return textLabel
+    end
+    
+    local function scanLootbags()
+        if not lootbagESP.Enabled then return end
+        for _, obj in pairs(workspace:GetChildren()) do
+            if obj.Name == 'Default' then
+                local trashBag = obj:FindFirstChild('Meshes/Trash_bag2_Untitled.002', true)
+                if trashBag and not lootbagESP.Active[trashBag] then
+                    createLootbagESP(trashBag)
+                end
+            end
+        end
+    end
+    
+    local function updateLootbagESP()
+        Camera = workspace.CurrentCamera or Camera
+        local origin = (LocalPlayer.Character and LocalPlayer.Character.PrimaryPart and LocalPlayer.Character.PrimaryPart.Position) or Camera.CFrame.Position
+        
+        for trashBag, data in pairs(lootbagESP.Active) do
+            local textLabel = data.textLabel
+            local folder = data.folder
+            
+            if not trashBag or not trashBag.Parent then
+                pcall(function() 
+                    if folder then folder:Destroy() end
+                end)
+                lootbagESP.Active[trashBag] = nil
+            else
+                local dist = (trashBag.Position - origin).Magnitude
+                local displayDist = dist / 2.56
+                
+                if lootbagESP.Enabled and dist <= lootbagESP.RenderDistance then
+                    -- Convert world position to screen position
+                    local pos, onScreen = Camera:WorldToViewportPoint(trashBag.Position)
+                    
+                    if onScreen then
+                        -- Position the label above the trash bag
+                        textLabel.Position = UDim2.new(0, pos.X, 0, pos.Y - 50)
+                        textLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+                        textLabel.TextColor3 = lootbagESP.Color
+                        textLabel.TextSize = lootbagESP.Size
+                        textLabel.Font = lootbagESP.Font
+                        
+                        local text = ''
+                        
+                        if lootbagESP.ShowName then
+                            text = data.graveName or "Unknown Grave"
+                        end
+                        if lootbagESP.ShowDistance then
+                            local distText = string.format('%.0fm', displayDist)
+                            text = (text ~= '' and (text .. ' ' .. distText)) or distText
+                        end
+                        
+                        textLabel.Text = text
+                        
+                        -- Apply fade out on distance
+                        Functions:FadeOutOnDist(textLabel, dist, lootbagESP.RenderDistance)
+                        
+                        textLabel.Visible = (text ~= '')
+                    else
+                        textLabel.Visible = false
+                    end
+                else
+                    textLabel.Visible = false
+                end
+            end
+        end
+    end
+    
+    local lootbagESPConnections = {}
+    
+    table.insert(lootbagESPConnections, workspace.ChildAdded:Connect(function(child)
+        if child.Name == 'Default' then
+            task.spawn(function()
+                task.wait(0.1)
+                local trashBag = child:FindFirstChild('Meshes/Trash_bag2_Untitled.002', true)
+                if trashBag then
+                    createLootbagESP(trashBag)
+                end
+            end)
+        end
+    end))
+    
+    table.insert(lootbagESPConnections, workspace.ChildRemoved:Connect(function(child)
+        if child.Name == 'Default' then
+            local trashBag = child:FindFirstChild('Meshes/Trash_bag2_Untitled.002', true)
+            if trashBag and lootbagESP.Active[trashBag] then
+                pcall(function() 
+                    if lootbagESP.Active[trashBag].folder then 
+                        lootbagESP.Active[trashBag].folder:Destroy() 
+                    end
+                end)
+                lootbagESP.Active[trashBag] = nil
+            end
+        end
+    end))
+    
+    local lootScanInterval = 5.0
+    local lastLootScan = 0
+    
+    table.insert(lootbagESPConnections, RunService.Heartbeat:Connect(function()
+        local now = os.clock()
+        if lootbagESP.Enabled and (lootbagESP.ShowName or lootbagESP.ShowDistance) then
+            if now - lastLootScan >= lootScanInterval then
+                scanLootbags()
+                lastLootScan = now
+            end
+            updateLootbagESP()
+        else
+            for _, data in pairs(lootbagESP.Active) do
+                if data.textLabel then
+                    data.textLabel.Visible = false
+                end
+            end
+        end
+    end))
+    
+    table.insert(lootbagESPConnections, Players.PlayerRemoving:Connect(function()
+        for _, data in pairs(lootbagESP.Active) do
+            pcall(function() 
+                if data.folder then data.folder:Destroy() end
+            end)
+        end
+        lootbagESP.Active = {}
+    end))
+
+    LootbagESPSection:Toggle({
+        Name = "Grave Names",
+        Flag = "LootbagName",
+        Default = false,
+        Callback = function(State)
+            lootbagESP.ShowName = State
+            lootbagESP.Enabled = lootbagESP.ShowName or lootbagESP.ShowDistance
+            if State then
+                ScreenGui.Enabled = true
+                task.defer(scanLootbags)
+            else
+                if not lootbagESP.ShowName and not lootbagESP.ShowDistance then
+                    ScreenGui.Enabled = false
+                end
+            end
+        end
+    }):Colorpicker({
+        Name = "Grave Color",
+        Flag = "LootbagColor",
+        Default = lootbagESP.Color,
+        Callback = function(Value)
+            lootbagESP.Color = Value
+            for _, data in pairs(lootbagESP.Active) do
+                pcall(function() 
+                    if data.textLabel then data.textLabel.TextColor3 = Value end
+                end)
+            end
+        end
+    })
+
+    LootbagESPSection:Toggle({
+        Name = "Grave Distance",
+        Flag = "LootbagDistance",
+        Default = false,
+        Callback = function(State)
+            lootbagESP.ShowDistance = State
+            lootbagESP.Enabled = lootbagESP.ShowName or lootbagESP.ShowDistance
+            if State then
+                ScreenGui.Enabled = true
+                task.defer(scanLootbags)
+            else
+                if not lootbagESP.ShowName and not lootbagESP.ShowDistance then
+                    ScreenGui.Enabled = false
+                end
+            end
+        end
+    })
+
+    LootbagESPSection:Slider({
+        Name = "Max Distance",
+        Flag = "LootbagDistance",
+        Min = 50,
+        Max = 10000,
+        Default = lootbagESP.RenderDistance,
+        Decimals = 1,
+        Callback = function(Value)
+            lootbagESP.RenderDistance = Value
+        end
+    })
+
+    LootbagESPSection:Dropdown({
+        Name = "Text Font",
+        Flag = "LootbagFont",
+        Options = {
+            'Code',
+            'Arial',
+            'ArialBold',
+            'Cartoon',
+            'Fantasy',
+            'Garamond',
+            'Gotham',
+            'GothamBold',
+            'GothamMedium',
+            'GothamSemibold',
+            'Highway',
+            'Legacy',
+            'Roboto',
+            'RobotoMono',
+            'SourceSans',
+            'SourceSansBold',
+            'SourceSansItalic',
+            'SourceSansSemibold',
+        },
+        Default = 'Code',
+        Callback = function(value)
+            local fontMap = {
+                ['Code'] = Enum.Font.Code,
+                ['Arial'] = Enum.Font.Arial,
+                ['ArialBold'] = Enum.Font.ArialBold,
+                ['Cartoon'] = Enum.Font.Cartoon,
+                ['Fantasy'] = Enum.Font.Fantasy,
+                ['Garamond'] = Enum.Font.Garamond,
+                ['Gotham'] = Enum.Font.Gotham,
+                ['GothamBold'] = Enum.Font.GothamBold,
+                ['GothamMedium'] = Enum.Font.GothamMedium,
+                ['GothamSemibold'] = Enum.Font.GothamSemibold,
+                ['Highway'] = Enum.Font.Highway,
+                ['Legacy'] = Enum.Font.Legacy,
+                ['Roboto'] = Enum.Font.Roboto,
+                ['RobotoMono'] = Enum.Font.RobotoMono,
+                ['SourceSans'] = Enum.Font.SourceSans,
+                ['SourceSansBold'] = Enum.Font.SourceSansBold,
+                ['SourceSansItalic'] = Enum.Font.SourceSansItalic,
+                ['SourceSansSemibold'] = Enum.Font.SourceSansSemibold,
+            }
+            
+            local newFont = fontMap[value] or Enum.Font.Code
+            lootbagESP.Font = newFont
+            
+            for _, data in pairs(lootbagESP.Active) do
+                pcall(function() 
+                    if data.textLabel then data.textLabel.Font = newFont end
+                end)
+            end
+        end
+    })
+
+    if lootbagESP.Enabled then
+        ScreenGui.Enabled = true
+        task.defer(scanLootbags)
+    end
+end
+
+
+local Movements = Skins:Section({ Name = "Player Exploit",Side = "Left" })
+local Staff = Skins:Section({ Name = "Mod Detector",Side = "Right" })
+local players = game:GetService("Players")
+local lp = players.LocalPlayer
+
+staffscannerenabled = false
+
+local staffranks = {
+    {min = 5, max = 5, name = "Wiki Team"},
+    {min = 6, max = 6, name = "Bug Squasher"},
+    {min = 7, max = 7, name = "Contributor"},
+    {min = 8, max = 8, name = "Alpha Tester"},
+    {min = 9, max = 9, name = "Beta Tester"},
+    {min = 9, max = 9, name = "Sigma Tester"},
+    {min = 90, max = 90, name = "Content Creator"},
+    {min = 98, max = 98, name = "Trial Moderator"},
+    {min = 99, max = 99, name = "Moderator"},
+    {min = 100, max = 100, name = "Senior Moderator"},
+    {min = 150, max = 150, name = "Administrator"},
+    {min = 151, max = 151, name = "Contractor"},
+    {min = 152, max = 152, name = "Map Developer"},
+    {min = 198, max = 198, name = "Internal Staff"},
+    {min = 199, max = 199, name = "Senior Administrator"},
+    {min = 250, max = 250, name = "Developer"},
+    {min = 253, max = 253, name = "Lead Developer"},
+    {min = 254, max = 254, name = "Co-Owner"},
+    {min = 255, max = 255, name = "Owner"}
+}
+
+local function getrankname(rank)
+    for _, data in ipairs(staffranks) do
+        if rank >= data.min and rank <= data.max then
+            return data.name
+        end
+    end
+    return "unknown"
+end
+
+local groupservice = game:GetService("GroupService")
+local groupid = 3441839
+
+local function checkstaffmember(player)
+    if not staffscannerenabled then return end
+    
+    local success, result = pcall(function()
+        return groupservice:GetGroupInfoAsync(groupid)
+    end)
+    
+    if not success then return end
+    
+    local success2, rank = pcall(function()
+        return player:GetRankInGroup(groupid)
+    end)
+    
+    if success2 and rank and rank > 0 then
+        local rankname = getrankname(rank)
+        if rankname ~= "unknown" then
+            Library:Notification(player.Name .. " is a " .. rankname, 5)
+        end
+    end
+end
+
+Staff:Toggle({
+    Name = "Staff Scanner",
+    Flag = "StaffScanner",
+    Default = false,
+    Callback = function(state)
+        staffscannerenabled = state
+        if state then
+            for _, player in ipairs(players:GetPlayers()) do
+                if player ~= lp then
+                    task.spawn(function()
+                        checkstaffmember(player)
+                    end)
+                end
+            end
+        end
+    end
+})
+
+players.PlayerAdded:Connect(function(player)
+    if staffscannerenabled then
+        task.wait(0.5)
+        checkstaffmember(player)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        task.wait(30)
+        if staffscannerenabled then
+            for _, player in ipairs(players:GetPlayers()) do
+                if player ~= lp then
+                    task.spawn(function()
+                        checkstaffmember(player)
+                    end)
+                end
+            end
+        end
+    end
+end)
+
+
+do
+	Players = Players or game:GetService("Players")
+	LocalPlayer = Players.LocalPlayer
+	Camera = workspace.CurrentCamera
+	RunService = game:GetService'RunService'
+	CoreGui = game:GetService("CoreGui")
+    local misc = workspace:WaitForChild'world_assets':WaitForChild'StaticObjects':WaitForChild'Misc'
+
+    repKitESP = repKitESP or {
+        Enabled = false,
+        ShowDistance = false,
+        Color = Color3.fromRGB(255, 255, 255),
+        Size = 14,
+        RenderDistance = 10000,
+        Active = {},
+        Font = Enum.Font.Code,
+    }
+    local meshId = 'rbxassetid://10058182223'
+
+    local function createRepKitBillboard(part)
+        if repKitESP.Active[part] then return end
+        
+        local billboard = Instance.new('BillboardGui')
+        billboard.Name = 'RepKitESP'
+        billboard.Adornee = part
+        billboard.Size = UDim2.new(0, 200, 0, 50)
+        billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+        billboard.AlwaysOnTop = true
+        billboard.ResetOnSpawn = false
+        billboard.Parent = part
+
+        local label = Instance.new('TextLabel')
+        label.Name = 'RepKitText'
+        label.BackgroundTransparency = 1
+        label.TextColor3 = repKitESP.Color
+        label.TextSize = repKitESP.Size
+        label.Font = repKitESP.Font
+        label.Text = ''
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.TextWrapped = true
+        label.TextStrokeColor3 = Color3.new(0, 0, 0)
+        label.TextStrokeTransparency = 0
+        label.Parent = billboard
+
+        repKitESP.Active[part] = {
+            billboard = billboard,
+            label = label,
+            part = part
+        }
+        return billboard
+    end
+
+    local function scan()
+        if not repKitESP.Enabled then return end
+        for _, m in ipairs(misc:GetDescendants()) do
+            if m.Name == 'Main' and m:IsA'MeshPart' and m.MeshId == meshId and not repKitESP.Active[m] then
+                createRepKitBillboard(m)
+            end
+        end
+    end
+
+    local function update()
+        if not repKitESP.Enabled then
+            for _, d in pairs(repKitESP.Active) do 
+                if d.billboard then d.billboard.Enabled = false end
+            end
+            return
+        end
+        local origin = LocalPlayer.Character and LocalPlayer.Character.PrimaryPart and LocalPlayer.Character.PrimaryPart.Position or Camera.CFrame.Position
+        for part, data in pairs(repKitESP.Active) do
+            if part.Parent then
+                local dist = (part.Position - origin).Magnitude
+                if dist <= repKitESP.RenderDistance then
+                    local txt = 'Weapon Repair Kit'
+                    if repKitESP.ShowDistance then
+                        txt = txt .. string.format(' %.0fm', dist/2.56)
+                    end
+                    data.label.Text = txt
+                    data.label.Font = repKitESP.Font
+                    data.label.TextColor3 = repKitESP.Color
+                    data.label.TextSize = repKitESP.Size
+                    
+                    -- Apply fade out on distance
+                    local transparency = math.max(0.1, 1 - (dist / repKitESP.RenderDistance))
+                    data.label.TextStrokeTransparency = 1 - transparency
+                    data.label.TextTransparency = 1 - transparency
+                    
+                    data.billboard.Enabled = true
+                else
+                    data.billboard.Enabled = false
+                end
+            else 
+                pcall(function() 
+                    if data.billboard then data.billboard:Destroy() end
+                end)
+                repKitESP.Active[part] = nil 
+            end
+        end
+    end
+
+    misc.ChildAdded:Connect(function() scan() end)
+
+    misc.ChildRemoved:Connect(function(child)
+        for part, data in pairs(repKitESP.Active) do
+            if part:IsDescendantOf(child) then
+                pcall(function() 
+                    if data.billboard then data.billboard:Destroy() end
+                end)
+                repKitESP.Active[part] = nil
+            end
+        end
+    end)
+
+    RunService.Heartbeat:Connect(update)
+
+    ItemsESPSection:Toggle({
+        Name = "Weapon Repair Kit",
+        Flag = "RepKitESP",
+        Default = false,
+        Callback = function(State)
+            repKitESP.Enabled = State
+            if State then
+                scan() 
+            else 
+                for _, d in pairs(repKitESP.Active) do 
+                    pcall(function() 
+                        if d.billboard then d.billboard:Destroy() end
+                    end)
+                end
+                repKitESP.Active = {}
+            end
+        end
+    }):Colorpicker({
+        Name = "Rep Kit Color",
+        Flag = "RepKitColor",
+        Default = repKitESP.Color,
+        Callback = function(Value)
+            repKitESP.Color = Value
+            for _, d in pairs(repKitESP.Active) do 
+                if d.label then d.label.TextColor3 = Value end
+            end
+        end
+    })
+
+    ItemsESPSection:Toggle({
+        Name = "Weapon Repair Kit Distances",
+        Flag = "RepKitDist",
+        Default = false,
+        Callback = function(State)
+            repKitESP.ShowDistance = State
+        end
+    })
+
+    ItemsESPSection:Slider({
+        Name = "Max Distance",
+        Flag = "RepKitRange",
+        Min = 50,
+        Max = 10000,
+        Default = 10000,
+        Decimals = 1,
+        Callback = function(Value)
+            repKitESP.RenderDistance = Value
+        end
+    })
+
+    ItemsESPSection:Dropdown({
+        Name = "Text Font",
+        Flag = "RepKitFont",
+        Options = {
+            'Code',
+            'Arial',
+            'ArialBold',
+            'Cartoon',
+            'Fantasy',
+            'Garamond',
+            'Gotham',
+            'GothamBold',
+            'GothamMedium',
+            'GothamSemibold',
+            'Highway',
+            'Legacy',
+            'Roboto',
+            'RobotoMono',
+            'SourceSans',
+            'SourceSansBold',
+            'SourceSansItalic',
+            'SourceSansSemibold',
+        },
+        Default = 'Code',
+        Callback = function(value)
+            local fontMap = {
+                ['Code'] = Enum.Font.Code,
+                ['Arial'] = Enum.Font.Arial,
+                ['ArialBold'] = Enum.Font.ArialBold,
+                ['Cartoon'] = Enum.Font.Cartoon,
+                ['Fantasy'] = Enum.Font.Fantasy,
+                ['Garamond'] = Enum.Font.Garamond,
+                ['Gotham'] = Enum.Font.Gotham,
+                ['GothamBold'] = Enum.Font.GothamBold,
+                ['GothamMedium'] = Enum.Font.GothamMedium,
+                ['GothamSemibold'] = Enum.Font.GothamSemibold,
+                ['Highway'] = Enum.Font.Highway,
+                ['Legacy'] = Enum.Font.Legacy,
+                ['Roboto'] = Enum.Font.Roboto,
+                ['RobotoMono'] = Enum.Font.RobotoMono,
+                ['SourceSans'] = Enum.Font.SourceSans,
+                ['SourceSansBold'] = Enum.Font.SourceSansBold,
+                ['SourceSansItalic'] = Enum.Font.SourceSansItalic,
+                ['SourceSansSemibold'] = Enum.Font.SourceSansSemibold,
+            }
+            
+            local newFont = fontMap[value] or Enum.Font.Code
+            repKitESP.Font = newFont
+            
+            for _, data in pairs(repKitESP.Active) do
+                pcall(function() 
+                    if data.label then data.label.Font = newFont end
+                end)
+            end
+        end
+    })
+
+    if repKitESP.Enabled then
+        task.defer(scan)
+    end
+end
+
+do
+    Players = Players or game:GetService("Players")
+    ReplicatedStorage = game:GetService('ReplicatedStorage')
+    Workspace = game:GetService('Workspace')
+    RunService = game:GetService('RunService')
+    CoreGui = game:GetService("CoreGui")
+
+    Camera = Workspace.CurrentCamera
+    LocalPlayer = Players.LocalPlayer
+
+    local function getMiscFolder()
+        local wa = Workspace:FindFirstChild('world_assets')
+        if not wa then return nil end
+        local static = wa:FindFirstChild('StaticObjects')
+        if not static then return nil end
+        return static:FindFirstChild('Misc')
+    end
+
+    local function getAmmoFolder()
+        local assets = ReplicatedStorage:FindFirstChild('Assets')
+        if not assets then return nil end
+        local vms = assets:FindFirstChild('ViewModels')
+        if not vms then return nil end
+        local combat = vms:FindFirstChild('Combat')
+        if not combat then return nil end
+        return combat:FindFirstChild('Ammo')
+    end
+
+    ammoESP = ammoESP or {
+        Enabled = false,
+        ShowName = false,
+        ShowDistance = false,
+        Outline = true,
+        Size = 14,
+        Color = Color3.fromRGB(255, 255, 255),
+        RenderDistance = 10000,
+        Active = {},
+        ScannedObjects = {},
+        Font = Enum.Font.Code,
+    }
+
+    local ammoCache = {}
+
+    local function extract_id(str)
+        if type(str) ~= 'string' then return tostring(str) end
+        local id = str:match('(%d+)')
+        return id or str
+    end
+
+    local function buildAmmoCache()
+        if next(ammoCache) then return end
+
+        local ammoFolder = getAmmoFolder()
+        if not ammoFolder then return end
+
+        for _, ammo_model in ipairs(ammoFolder:GetChildren()) do
+            if ammo_model:IsA('Model') and ammo_model.Name ~= 'Model' then
+                local ammo_main = ammo_model:FindFirstChild('Main') or ammo_model:FindFirstChildWhichIsA('MeshPart', true)
+                if ammo_main and ammo_main:IsA('MeshPart') then
+                    local ammo_mesh_id = extract_id(ammo_main.MeshId)
+                    local ammo_tex_id = extract_id(ammo_main.TextureID)
+                    local signature = ammo_mesh_id .. ': ' .. (ammo_tex_id or '')
+                    ammoCache[signature] = ammo_model.Name
+                end
+            end
+        end
+    end
+
+    local function createAmmoBillboard(sourcePart, label)
+        if ammoESP.Active[sourcePart] then return end
+        
+        local billboard = Instance.new('BillboardGui')
+        billboard.Name = 'AmmoESP'
+        billboard.Adornee = sourcePart
+        billboard.Size = UDim2.new(0, 200, 0, 50)
+        billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+        billboard.AlwaysOnTop = true
+        billboard.ResetOnSpawn = false
+        billboard.Parent = sourcePart
+
+        local labelText = Instance.new('TextLabel')
+        labelText.Name = 'AmmoText'
+        labelText.BackgroundTransparency = 1
+        labelText.TextColor3 = ammoESP.Color
+        labelText.TextSize = ammoESP.Size
+        labelText.Font = ammoESP.Font
+        labelText.Text = ''
+        labelText.Size = UDim2.new(1, 0, 1, 0)
+        labelText.TextWrapped = true
+        labelText.TextStrokeColor3 = Color3.new(0, 0, 0)
+        labelText.TextStrokeTransparency = 0
+        labelText.Parent = billboard
+
+        ammoESP.Active[sourcePart] = {
+            billboard = billboard,
+            label = labelText,
+            ammoName = label,
+            part = sourcePart
+        }
+        return billboard
+    end
+
+    local function scanAmmo()
+        if not ammoESP.Enabled then return end
+        local misc = getMiscFolder()
+        if not misc then return end
+
+        buildAmmoCache()
+        if not next(ammoCache) then return end
+
+        for _, misc_child in ipairs(misc:GetChildren()) do
+            if misc_child:IsA('Model') and not ammoESP.ScannedObjects[misc_child] then
+                ammoESP.ScannedObjects[misc_child] = true
+
+                local source = misc_child:FindFirstChild('Main') or misc_child:FindFirstChildWhichIsA('MeshPart', true)
+                if source and source:IsA('MeshPart') and not ammoESP.Active[source] then
+                    local src_mesh_id = extract_id(source.MeshId)
+                    local src_tex_id = extract_id(source.TextureID)
+                    local signature = src_mesh_id .. ': ' .. (src_tex_id or '')
+
+                    local ammoName = ammoCache[signature]
+                    if ammoName then
+                        createAmmoBillboard(source, ammoName)
+                    end
+                end
+            end
+        end
+    end
+
+    function updateAmmoESP()
+        local origin = (LocalPlayer.Character and LocalPlayer.Character.PrimaryPart) and LocalPlayer.Character.PrimaryPart.Position or Camera.CFrame.Position
+        
+        for sourcePart, data in pairs(ammoESP.Active) do
+            if not sourcePart or not sourcePart.Parent then
+                pcall(function() 
+                    if data.billboard then data.billboard:Destroy() end
+                end)
+                ammoESP.Active[sourcePart] = nil
+            else
+                local dist = (sourcePart.Position - origin).Magnitude
+                local displayDist = dist / 2.56
+
+                if not ammoESP.Enabled or dist > ammoESP.RenderDistance then
+                    data.billboard.Enabled = false
+                else
+                    local labelText = data.label
+                    labelText.TextColor3 = ammoESP.Color
+                    labelText.TextSize = ammoESP.Size
+                    labelText.Font = ammoESP.Font
+
+                    local textStr = ''
+                    if ammoESP.ShowName then
+                        textStr = data.ammoName
+                    end
+                    if ammoESP.ShowDistance then
+                        local dt = string.format('%.0fm', displayDist)
+                        textStr = (textStr ~= '' and (textStr .. ' ' .. dt)) or dt
+                    end
+
+                    labelText.Text = textStr
+                    
+                    local transparency = math.max(0.1, 1 - (dist / ammoESP.RenderDistance))
+                    labelText.TextStrokeTransparency = 1 - transparency
+                    labelText.TextTransparency = 1 - transparency
+                    
+                    data.billboard.Enabled = (textStr ~= '')
+                end
+            end
+        end
+    end
+
+    local ammoESPConnections = {}
+
+    do
+        local misc = getMiscFolder()
+        if misc then
+            table.insert(ammoESPConnections, misc.ChildAdded:Connect(function()
+                task.spawn(function()
+                    task.wait(0.1)
+                    if ammoESP.Enabled then
+                        task.defer(scanAmmo)
+                    end
+                end)
+            end))
+        end
+    end
+    local misc = getMiscFolder()
+    table.insert(ammoESPConnections, misc.ChildRemoved:Connect(function(child)
+        for part, data in pairs(ammoESP.Active) do
+            if part:IsDescendantOf(child) then
+                pcall(function() 
+                    if data.billboard then data.billboard:Destroy() end
+                end)
+                ammoESP.Active[part] = nil
+            end
+        end
+    end))
+    local ammoScanInterval = 3.0
+    local lastAmmoScan = 0
+
+    table.insert(ammoESPConnections, RunService.Heartbeat:Connect(function()
+        local now = os.clock()
+        if ammoESP.Enabled and (ammoESP.ShowName or ammoESP.ShowDistance) then
+            updateAmmoESP()
+            if now - lastAmmoScan >= ammoScanInterval then
+                scanAmmo()
+                lastAmmoScan = now
+            end
+        else
+            for _, data in pairs(ammoESP.Active) do
+                if data.billboard then
+                    data.billboard.Enabled = false
+                end
+            end
+        end
+    end))
+
+    AmmoESPSection:Toggle({
+        Name = "Ammo Name",
+        Flag = "AmmoName",
+        Default = false,
+        Callback = function(State)
+            ammoESP.ShowName = State
+            ammoESP.Enabled = ammoESP.ShowName or ammoESP.ShowDistance
+            if State then
+                task.defer(scanAmmo)
+            end
+        end
+    }):Colorpicker({
+        Name = "Ammo Color",
+        Flag = "AmmoColor",
+        Default = ammoESP.Color,
+        Callback = function(Value)
+            ammoESP.Color = Value
+            for _, data in pairs(ammoESP.Active) do
+                pcall(function() 
+                    if data.label then data.label.TextColor3 = Value end
+                end)
+            end
+        end
+    })
+
+    AmmoESPSection:Toggle({
+        Name = "Ammo Distance",
+        Flag = "AmmoDistance",
+        Default = false,
+        Callback = function(State)
+            ammoESP.ShowDistance = State
+            ammoESP.Enabled = ammoESP.ShowName or ammoESP.ShowDistance
+            if State then
+                task.defer(scanAmmo)
+            end
+        end
+    })
+
+    AmmoESPSection:Slider({
+        Name = "Ammo ESP Distance",
+        Flag = "AmmoESPDistance",
+        Min = 50,
+        Max = 10000,
+        Default = ammoESP.RenderDistance,
+        Decimals = 1,
+        Callback = function(Value)
+            ammoESP.RenderDistance = Value
+        end
+    })
+
+    AmmoESPSection:Dropdown({
+        Name = "Text Font",
+        Flag = "AmmoFont",
+        Options = {
+            'Code',
+            'Arial',
+            'ArialBold',
+            'Cartoon',
+            'Fantasy',
+            'Garamond',
+            'Gotham',
+            'GothamBold',
+            'GothamMedium',
+            'GothamSemibold',
+            'Highway',
+            'Legacy',
+            'Roboto',
+            'RobotoMono',
+            'SourceSans',
+            'SourceSansBold',
+            'SourceSansItalic',
+            'SourceSansSemibold',
+        },
+        Default = 'Code',
+        Callback = function(value)
+            local fontMap = {
+                ['Code'] = Enum.Font.Code,
+                ['Arial'] = Enum.Font.Arial,
+                ['ArialBold'] = Enum.Font.ArialBold,
+                ['Cartoon'] = Enum.Font.Cartoon,
+                ['Fantasy'] = Enum.Font.Fantasy,
+                ['Garamond'] = Enum.Font.Garamond,
+                ['Gotham'] = Enum.Font.Gotham,
+                ['GothamBold'] = Enum.Font.GothamBold,
+                ['GothamMedium'] = Enum.Font.GothamMedium,
+                ['GothamSemibold'] = Enum.Font.GothamSemibold,
+                ['Highway'] = Enum.Font.Highway,
+                ['Legacy'] = Enum.Font.Legacy,
+                ['Roboto'] = Enum.Font.Roboto,
+                ['RobotoMono'] = Enum.Font.RobotoMono,
+                ['SourceSans'] = Enum.Font.SourceSans,
+                ['SourceSansBold'] = Enum.Font.SourceSansBold,
+                ['SourceSansItalic'] = Enum.Font.SourceSansItalic,
+                ['SourceSansSemibold'] = Enum.Font.SourceSansSemibold,
+            }
+            
+            local newFont = fontMap[value] or Enum.Font.Code
+            ammoESP.Font = newFont
+            
+            for _, data in pairs(ammoESP.Active) do
+                pcall(function() 
+                    if data.label then data.label.Font = newFont end
+                end)
+            end
+        end
+    })
+
+    if ammoESP.Enabled then
+        task.defer(scanAmmo)
+    end
+end
+
+local Visuals = Legit:Section({ Name = "World",Side = "Left" })
+local World2 = Legit:Section({ Name = "Lighting",Side = "Right" })
+do
+
+local players = game:GetService("Players")
+local lp = players.LocalPlayer
+local lighting = game:GetService("Lighting")
+local atmosphere = lighting:FindFirstChildOfClass("Atmosphere")
+
+if atmosphere then
+    atmosphere.Haze = 0
+    atmosphere.Density = 0
+
+    atmosphere:GetPropertyChangedSignal("Haze"):Connect(function()
+        if lightingenabled then atmosphere.Haze = 0 end
+    end)
+
+    atmosphere:GetPropertyChangedSignal("Density"):Connect(function()
+        if lightingenabled then atmosphere.Density = 0 end
+    end)
+end
+
+local function updatelighting()
+    if lightingenabled then
+        lighting.Brightness = currentbrightness
+        lighting.TimeOfDay = string.format("%02d:00:00", current_hour)
+    end
+end
+
+updatelighting()
+
+lighting:GetPropertyChangedSignal("Brightness"):Connect(function()
+    if lightingenabled and lighting.Brightness ~= currentbrightness then
+        lighting.Brightness = currentbrightness
+    end
+end)
+
+lighting:GetPropertyChangedSignal("TimeOfDay"):Connect(function()
+    if lightingenabled and lighting.TimeOfDay ~= string.format("%02d:00:00", current_hour) then
+        lighting.TimeOfDay = string.format("%02d:00:00", current_hour)
+    end
+end)
+
+World2:Toggle({
+    Name = "Lighting Changer",
+    Flag = "LightingOverride",
+    Default = false,
+    Callback = function(bool)
+        lightingenabled = bool
+        updatelighting()
+    end
+})
+
+World2:Slider({
+    Name = "Time of Day",
+    Flag = "TimeOfDay",
+    Min = 0,
+    Max = 23,
+    Default = 12,
+    Rounding = true,
+    Callback = function(value)
+        current_hour = value
+        updatelighting()
+    end
+})
+
+World2:Slider({
+    Name = "Brightness",
+    Flag = "Brightness",
+    Min = 0,
+    Max = 10,
+    Default = 5,
+    Decimals = 1,
+    Callback = function(value)
+        currentbrightness = value
+        updatelighting()
+    end
+})
+
+local Lighting = game:GetService('Lighting')
+local RunService = game:GetService("RunService")
+local fakeInstancesValues = {}
+fakeInstancesValues[Lighting] = {}
+fakeInstancesValues[Lighting.Atmosphere] = {}
+
+originalIndex = hookmetamethod(game, '__index', function(...)
+    local args = { ... }
+    local table = args[1]
+    local key = args[2]
+    local callingscript = getcallingscript()
+
+    if callingscript and callingscript ~= script then
+        if key == '__blockRealRewriting' then
+            return originalIndex(...)
+        end
+        if fakeInstancesValues[table] and fakeInstancesValues[table][key] then
+            return fakeInstancesValues[table][key]
+        end
+    end
+    return originalIndex(...)
+end)
+
+originalNewIndex = hookmetamethod(game, '__newindex', function(...)
+    local args = { ... }
+    local table, key, value = args[1], args[2], args[3]
+    local callingscript = getcallingscript()
+
+    if table == Lighting or table:IsDescendantOf(Lighting) then
+        if callingscript and callingscript ~= script then
+            if not fakeInstancesValues[table] then
+                fakeInstancesValues[table] = {}
+            end
+            fakeInstancesValues[table][key] = value
+        end
+    end
+
+    if callingscript and callingscript ~= script then
+        if fakeInstancesValues[table] then
+            fakeInstancesValues[table][key] = value
+            if fakeInstancesValues[table].__blockRealRewriting then
+                return
+            end
+        end
+    end
+
+    return originalNewIndex(...)
+end)
+
+local NoFogEnabled = false
+
+World2:Toggle({
+    Name = "No Fog",
+    Flag = "NoFog",
+    Default = false,
+    Callback = function(state)
+        NoFogEnabled = state
+        if NoFogEnabled then
+            Lighting.FogEnd = math.huge
+            local atmos = Lighting:FindFirstChildOfClass('Atmosphere')
+            if atmos then
+                pcall(function()
+                    atmos.Density = 0
+                end)
+            end
+        else
+            Lighting.FogEnd = 100000
+        end
+    end
+})
+
+World2:Toggle({
+    Name = "Clouds",
+    Flag = "Clouds",
+    Default = true,
+    Callback = function(state)
+        local terrain = workspace.Terrain
+        local clouds = terrain:FindFirstChild("Clouds")
+        if clouds then
+            clouds.Enabled = state
+        end
+    end
+})
+
+
+local leavesTransparency = 0
+local function getLeavesFromTree(tree)
+    return tree:FindFirstChild("Leaves")
+end
+local function updatePartTransparency(part, transparency)
+    part.Transparency = transparency
+end
+local function doAllLeaves()
+    local trees = workspace.world_assets.StaticObjects.Trees
+    for _, tree in ipairs(trees:GetChildren()) do
+        local leaves = getLeavesFromTree(tree)
+        if leaves then
+            if leaves:IsA("BasePart") then
+                updatePartTransparency(leaves, leavesTransparency)
+            elseif leaves:IsA("Model") then
+                for _, part in ipairs(leaves:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        updatePartTransparency(part, leavesTransparency)
+                    end
+                end
+            end
+        end
+    end
+end
+
+leavesUpdateNeeded = false
+leavesLastUpdate = 0
+leavesUpdateRate = 0.5
+oldLeavesTransparency = leavesTransparency
+
+RunService.Heartbeat:Connect(function()
+
+    local currentTime = os.clock()
+    if leavesUpdateNeeded and (currentTime - leavesLastUpdate) >= leavesUpdateRate then
+        doAllLeaves()
+        leavesUpdateNeeded = false
+        leavesLastUpdate = currentTime
+    end
+end)
+
+Visuals:Toggle({
+    Name = "No Leaves",
+    Flag = "noleaves",
+    Default = false,
+    Callback = function(state)
+        if state then
+            leavesTransparency = 1
+        else
+            leavesTransparency = 0
+        end
+        leavesUpdateNeeded = true 
+    end
+})
+
+Visuals:Slider({
+    Name = "Leaves Transparency",
+    Flag = "leavestransparency",
+    Default = 0,
+    Min = 0,
+    Max = 1,
+    Decimals = 0,
+    Callback = function(val)
+        leavesTransparency = val
+        leavesUpdateNeeded = true
+    end
+})
+
+Visuals:Toggle({
+    Name = "Remove Grass",
+    Flag = "removegrass",
+    Default = false,
+    Callback = function(enabled)
+        removeGrassEnabled = enabled
+        
+        if enabled then
+            if workspace:FindFirstChild("Terrain") then
+                sethiddenproperty(workspace.Terrain, "Decoration", false)
+            end
+        else
+            if workspace:FindFirstChild("Terrain") then
+                sethiddenproperty(workspace.Terrain, "Decoration", true)
+            end
+        end
+    end
+})
+
+World2:Toggle({
+    Name = "Remove Clouds",
+    Flag = "CloudRemover",
+    Default = false,
+    Callback = function(e)
+        local terrain = workspace.Terrain
+        if terrain then
+            clouds = terrain:FindFirstChild("Clouds")
+            if clouds then
+                clouds.Enabled = not e
+            end
+        end
+    end
+})
+
+sky = game.Lighting:FindFirstChild('Sky')
+local Flags = {
+    SkySelector = 'Games Default Sky',
+    SkySelectorToggle = false
+}
+
+local OldSkyProps
+do
+    if sky then
+        OldSkyProps = {
+            SkyboxBk = sky.SkyboxBk,
+            SkyboxDn = sky.SkyboxDn,
+            SkyboxFt = sky.SkyboxFt,
+            SkyboxLf = sky.SkyboxLf,
+            SkyboxRt = sky.SkyboxRt,
+            SkyboxUp = sky.SkyboxUp,
+        }
+    end
+end
+
+function setSkybox(name)
+    if not sky then
+        sky = Instance.new('Sky')
+        sky.Parent = game.Lighting
+    end
+    if name == 'Games Default Sky' then
+        if OldSkyProps then
+            sky.SkyboxBk = OldSkyProps.SkyboxBk
+            sky.SkyboxDn = OldSkyProps.SkyboxDn
+            sky.SkyboxFt = OldSkyProps.SkyboxFt
+            sky.SkyboxLf = OldSkyProps.SkyboxLf
+            sky.SkyboxRt = OldSkyProps.SkyboxRt
+            sky.SkyboxUp = OldSkyProps.SkyboxUp
+        else
+            sky.SkyboxBk = 'rbxasset://textures/sky/sky512_bk.tex'
+            sky.SkyboxDn = 'rbxasset://textures/sky/sky512_dn.tex'
+            sky.SkyboxFt = 'rbxasset://textures/sky/sky512_ft.tex'
+            sky.SkyboxLf = 'rbxasset://textures/sky/sky512_lf.tex'
+            sky.SkyboxRt = 'rbxasset://textures/sky/sky512_rt.tex'
+            sky.SkyboxUp = 'rbxasset://textures/sky/sky512_up.tex'
+        end
+    elseif name == 'Sunset' then
+        sky.SkyboxBk = 'rbxassetid://600830446'
+        sky.SkyboxDn = 'rbxassetid://600831635'
+        sky.SkyboxFt = 'rbxassetid://600832720'
+        sky.SkyboxLf = 'rbxassetid://600886090'
+        sky.SkyboxRt = 'rbxassetid://600833862'
+        sky.SkyboxUp = 'rbxassetid://600835177'
+    elseif name == 'Arctic' then
+        sky.SkyboxBk = 'http://www.roblox.com/asset/?id=225469390'
+        sky.SkyboxDn = 'http://www.roblox.com/asset/?id=225469395'
+        sky.SkyboxFt = 'http://www.roblox.com/asset/?id=225469403'
+        sky.SkyboxLf = 'http://www.roblox.com/asset/?id=225469450'
+        sky.SkyboxRt = 'http://www.roblox.com/asset/?id=225469471'
+        sky.SkyboxUp = 'http://www.roblox.com/asset/?id=225469481'
+    elseif name == 'Space' then
+        sky.SkyboxBk = 'http://www.roblox.com/asset/?id=166509999'
+        sky.SkyboxDn = 'http://www.roblox.com/asset/?id=166510057'
+        sky.SkyboxFt = 'http://www.roblox.com/asset/?id=166510116'
+        sky.SkyboxLf = 'http://www.roblox.com/asset/?id=166510092'
+        sky.SkyboxRt = 'http://www.roblox.com/asset/?id=166510131'
+        sky.SkyboxUp = 'http://www.roblox.com/asset/?id=166510114'
+    elseif name == 'Roblox Default' then
+        sky.SkyboxBk = 'rbxasset://textures/sky/sky512_bk.tex'
+        sky.SkyboxDn = 'rbxasset://textures/sky/sky512_dn.tex'
+        sky.SkyboxFt = 'rbxasset://textures/sky/sky512_ft.tex'
+        sky.SkyboxLf = 'rbxasset://textures/sky/sky512_lf.tex'
+        sky.SkyboxRt = 'rbxasset://textures/sky/sky512_rt.tex'
+        sky.SkyboxUp = 'rbxasset://textures/sky/sky512_up.tex'
+    elseif name == 'Red Night' then
+        sky.SkyboxBk = 'http://www.roblox.com/Asset/?ID=401664839'
+        sky.SkyboxDn = 'http://www.roblox.com/Asset/?ID=401664862'
+        sky.SkyboxFt = 'http://www.roblox.com/Asset/?ID=401664960'
+        sky.SkyboxLf = 'http://www.roblox.com/Asset/?ID=401664881'
+        sky.SkyboxRt = 'http://www.roblox.com/Asset/?ID=401664901'
+        sky.SkyboxUp = 'http://www.roblox.com/Asset/?ID=401664936'
+    elseif name == 'Deep Space' then
+        sky.SkyboxBk = 'http://www.roblox.com/asset/?id=149397692'
+        sky.SkyboxDn = 'http://www.roblox.com/asset/?id=149397686'
+        sky.SkyboxFt = 'http://www.roblox.com/asset/?id=149397697'
+        sky.SkyboxLf = 'http://www.roblox.com/asset/?id=149397684'
+        sky.SkyboxRt = 'http://www.roblox.com/asset/?id=149397688'
+        sky.SkyboxUp = 'http://www.roblox.com/asset/?id=149397702'
+    elseif name == 'Pink Skies' then
+        sky.SkyboxBk = 'http://www.roblox.com/asset/?id=151165214'
+        sky.SkyboxDn = 'http://www.roblox.com/asset/?id=151165197'
+        sky.SkyboxFt = 'http://www.roblox.com/asset/?id=151165224'
+        sky.SkyboxLf = 'http://www.roblox.com/asset/?id=151165191'
+        sky.SkyboxRt = 'http://www.roblox.com/asset/?id=151165206'
+        sky.SkyboxUp = 'http://www.roblox.com/asset/?id=151165227'
+    elseif name == 'Purple Sunset' then
+        sky.SkyboxBk = 'rbxassetid://264908339'
+        sky.SkyboxDn = 'rbxassetid://264907909'
+        sky.SkyboxFt = 'rbxassetid://264909420'
+        sky.SkyboxLf = 'rbxassetid://264909758'
+        sky.SkyboxRt = 'rbxassetid://264908886'
+        sky.SkyboxUp = 'rbxassetid://264907379'
+    elseif name == 'Blue Night' then
+        sky.SkyboxBk = 'http://www.roblox.com/Asset/?ID=12064107'
+        sky.SkyboxDn = 'http://www.roblox.com/Asset/?ID=12064152'
+        sky.SkyboxFt = 'http://www.roblox.com/Asset/?ID=12064121'
+        sky.SkyboxLf = 'http://www.roblox.com/Asset/?ID=12063984'
+        sky.SkyboxRt = 'http://www.roblox.com/Asset/?ID=12064115'
+        sky.SkyboxUp = 'http://www.roblox.com/Asset/?ID=12064131'
+    elseif name == 'Blossom Daylight' then
+        sky.SkyboxBk = 'http://www.roblox.com/asset/?id=271042516'
+        sky.SkyboxDn = 'http://www.roblox.com/asset/?id=271077243'
+        sky.SkyboxFt = 'http://www.roblox.com/asset/?id=271042556'
+        sky.SkyboxLf = 'http://www.roblox.com/asset/?id=271042310'
+        sky.SkyboxRt = 'http://www.roblox.com/asset/?id=271042467'
+        sky.SkyboxUp = 'http://www.roblox.com/asset/?id=271077958'
+    elseif name == 'Blue Nebula' then
+        sky.SkyboxBk = 'http://www.roblox.com/asset?id=135207744'
+        sky.SkyboxDn = 'http://www.roblox.com/asset?id=135207662'
+        sky.SkyboxFt = 'http://www.roblox.com/asset?id=135207770'
+        sky.SkyboxLf = 'http://www.roblox.com/asset?id=135207615'
+        sky.SkyboxRt = 'http://www.roblox.com/asset?id=135207695'
+        sky.SkyboxUp = 'http://www.roblox.com/asset?id=135207794'
+    elseif name == 'Blue Planet' then
+        sky.SkyboxBk = 'rbxassetid://218955819'
+        sky.SkyboxDn = 'rbxassetid://218953419'
+        sky.SkyboxFt = 'rbxassetid://218954524'
+        sky.SkyboxLf = 'rbxassetid://218958493'
+        sky.SkyboxRt = 'rbxassetid://218957134'
+        sky.SkyboxUp = 'rbxassetid://218950090'
+    elseif name == 'Deep Space 2' then
+        sky.SkyboxBk = 'http://www.roblox.com/asset/?id=159248188'
+        sky.SkyboxDn = 'http://www.roblox.com/asset/?id=159248183'
+        sky.SkyboxFt = 'http://www.roblox.com/asset/?id=159248187'
+        sky.SkyboxLf = 'http://www.roblox.com/asset/?id=159248173'
+        sky.SkyboxRt = 'http://www.roblox.com/asset/?id=159248192'
+        sky.SkyboxUp = 'http://www.roblox.com/asset/?id=159248176'
+    elseif name == 'Galaxy' then
+        sky.SkyboxBk = 'rbxassetid://1138550863'
+        sky.SkyboxDn = 'rbxassetid://1138551165'
+        sky.SkyboxFt = 'rbxassetid://1138552163'
+        sky.SkyboxLf = 'rbxassetid://1138551555'
+        sky.SkyboxRt = 'rbxassetid://1138552890'
+        sky.SkyboxUp = 'rbxassetid://153520294'
+    elseif name == 'Island' then
+        sky.SkyboxBk = 'http://www.roblox.com/asset/?id=14753804949'
+        sky.SkyboxDn = 'http://www.roblox.com/asset/?id=14753795573'
+        sky.SkyboxFt = 'http://www.roblox.com/asset/?id=14753807625'
+        sky.SkyboxLf = 'http://www.roblox.com/asset/?id=14753797417'
+        sky.SkyboxRt = 'http://www.roblox.com/asset/?id=14753799966'
+        sky.SkyboxUp = 'http://www.roblox.com/asset/?id=14753810287'
+    elseif name == 'Purple Sky' then
+        sky.SkyboxBk = 'http://www.roblox.com/asset/?id=16553658937'
+        sky.SkyboxDn = 'http://www.roblox.com/asset/?id=16553660713'
+        sky.SkyboxFt = 'http://www.roblox.com/asset/?id=16553662144'
+        sky.SkyboxLf = 'http://www.roblox.com/asset/?id=16553664042'
+        sky.SkyboxRt = 'http://www.roblox.com/asset/?id=16553665766'
+        sky.SkyboxUp = 'http://www.roblox.com/asset/?id=16553667750'
+    elseif name == 'Forest' then
+        sky.SkyboxBk = 'rbxassetid://17428978603'
+        sky.SkyboxDn = 'rbxassetid://17428977445'
+        sky.SkyboxFt = 'rbxassetid://17428977114'
+        sky.SkyboxLf = 'rbxassetid://17428978399'
+        sky.SkyboxRt = 'rbxassetid://17428976828'
+        sky.SkyboxUp = 'rbxassetid://17428976669'
+    elseif name == 'City' then
+        sky.SkyboxBk = 'http://www.roblox.com/asset/?id=10345426'
+        sky.SkyboxDn = 'http://www.roblox.com/asset/?id=10345444'
+        sky.SkyboxFt = 'http://www.roblox.com/asset/?id=10345426'
+        sky.SkyboxLf = 'http://www.roblox.com/asset/?id=10345426'
+        sky.SkyboxRt = 'http://www.roblox.com/asset/?id=10345426'
+        sky.SkyboxUp = 'http://www.roblox.com/asset/?id=10345487'
+    elseif name == 'Minecraft' then
+        sky.SkyboxBk = 'http://www.roblox.com/asset/?id=3754796725'
+        sky.SkyboxDn = 'http://www.roblox.com/asset/?id=3754833439'
+        sky.SkyboxFt = 'http://www.roblox.com/asset/?id=3754795891'
+        sky.SkyboxLf = 'http://www.roblox.com/asset/?id=3754798649'
+        sky.SkyboxRt = 'http://www.roblox.com/asset/?id=3754799327'
+        sky.SkyboxUp = 'http://www.roblox.com/asset/?id=3754888841'
+    elseif name == 'Among Us' then
+        sky.SkyboxBk = 'rbxassetid://5752463190'
+        sky.SkyboxDn = 'rbxassetid://5752463190'
+        sky.SkyboxFt = 'rbxassetid://5752463190'
+        sky.SkyboxLf = 'rbxassetid://5752463190'
+        sky.SkyboxRt = 'rbxassetid://5752463190'
+        sky.SkyboxUp = 'rbxassetid://5752463190'
+    elseif name == 'Spongebob' then
+        sky.SkyboxBk = 'rbxassetid://277099484'
+        sky.SkyboxDn = 'rbxassetid://277099500'
+        sky.SkyboxFt = 'rbxassetid://277099554'
+        sky.SkyboxLf = 'rbxassetid://277099531'
+        sky.SkyboxRt = 'rbxassetid://277099589'
+        sky.SkyboxUp = 'rbxassetid://277101591'
+    end
+end
+
+World2:Toggle({
+    Name = "Custom Sky",
+    Flag = "CustomSky",
+    Default = false,
+    Callback = function(state)
+        Flags.SkySelectorToggle = state
+        if state then
+            setSkybox(Flags.SkySelector)
+        else
+            setSkybox('Games Default Sky')
+        end
+    end
+})
+
+World2:Dropdown({
+    Name = "Choose Sky",
+    Flag = "SkySelector",
+    Options = {
+        'Games Default Sky',
+        'Roblox Default',
+        'Sunset',
+        'Arctic',
+        'Space',
+        'Red Night',
+        'Deep Space',
+        'Deep Space 2',
+        'Pink Skies',
+        'Purple Sunset',
+        'Blue Night',
+        'Blossom Daylight',
+        'Blue Nebula',
+        'Blue Planet',
+        'Galaxy',
+        'Island',
+        'Purple Sky',
+        'Forest',
+        'City',
+        'Minecraft',
+        'Among Us',
+        'Spongebob',
+    },
+    Default = 'Games Default Sky',
+    Callback = function(value)
+        Flags.SkySelector = value
+        if Flags.SkySelectorToggle then
+            setSkybox(value)
+        end
+    end
+})
+end
+
+local RS = game:GetService("RunService")
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local LP = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+local bhop, bhop_power = false, 25
+
+for _, v in getgc() do
+    if type(v) == "function" then
+        local info = debug.getinfo(v)
+        if info.name == "updateCharData" then
+            local old
+            old = hookfunction(v, newcclosure(function(p254, p255, p256)
+                if p254 == "Jump" then return end
+                return old(p254, p255, p256)
+            end))
+        end
+    end
+end
+
+Movements:Toggle({
+    Name = "Bhop",
+    Flag = "Bhop",
+    Default = false,
+    Callback = function(Value)
+        bhop = Value
+        game:GetService("ReplicatedStorage").CustomCharacterConfigs.Configuration.Client.cl_auto_jump.Value = Value
+    end
+}):Keybind({
+    Name = "Bhop Key",
+    Flag = "BhopKey",
+    Default = Enum.KeyCode.B,
+    Mode = "Toggle",
+    Callback = function(Value)
+        bhop = Value
+        game:GetService("ReplicatedStorage").CustomCharacterConfigs.Configuration.Client.cl_auto_jump.Value = Value
+    end
+})
+
+local camera = workspace.CurrentCamera
+local tables = { parts = {} }
+
+local func_vars = {
+    keycode = Enum.KeyCode,
+    nVec3 = Vector3.new,
+    insert = table.insert,
+}
+
+local tserv = {
+    player = {
+        player_modifiers = {
+            fly_hack = false,
+            c1 = true,
+            fly_hack_velocity = 30,
+        }
+    }
+}
+
+local function is_key_down(inputService, key)
+    return inputService:IsKeyDown(key)
+end
+
+local function get_part()
+    local attempt = 0
+    repeat
+        task.wait(0.5)
+        tables.parts = {}
+        for _, v in pairs(Camera:GetDescendants()) do
+            if v:IsA("BasePart")
+                and v.RootPriority
+                and v.RootPriority > 10
+                and v.AssemblyLinearVelocity
+                and v.AssemblyLinearVelocity.Magnitude > 0 then
+                func_vars.insert(tables.parts, v)
+            end
+        end
+        attempt += 1
+    until #tables.parts > 0 or attempt >= 3
+end
+
+local function fly()
+    if tserv.player.player_modifiers.fly_hack
+        and #tables.parts > 0
+        and tserv.player.player_modifiers.c1 then
+
+        local camLook = Camera.CFrame.LookVector
+        local dir = Vector3.zero
+
+        local keymap = {
+            [func_vars.keycode.W] = camLook,
+            [func_vars.keycode.S] = -camLook,
+            [func_vars.keycode.D] = func_vars.nVec3(-camLook.Z, 0, camLook.X),
+            [func_vars.keycode.A] = func_vars.nVec3(camLook.Z, 0, -camLook.X),
+            [func_vars.keycode.Space] = func_vars.nVec3(0, 1, 0),
+            [func_vars.keycode.LeftControl] = func_vars.nVec3(0, -1, 0),
+        }
+
+        for key, vec in pairs(keymap) do
+            if is_key_down(UIS, key) then
+                dir += vec
+            end
+        end
+
+        local finalVelocity = (dir.Magnitude > 0)
+            and dir.Unit * tserv.player.player_modifiers.fly_hack_velocity
+            or Vector3.zero
+
+        for _, obj in ipairs(tables.parts) do
+            obj.AssemblyLinearVelocity = finalVelocity
+        end
+    end
+end
+
+RS.Heartbeat:Connect(fly)
+
+Movements:Toggle({
+    Name = "Flyhack",
+    Flag = "Flyhack",
+    Default = false,
+    Callback = function(Value)
+        tserv.player.player_modifiers.fly_hack = Value
+        if Value then
+            get_part()
+        else
+            for _, obj in ipairs(tables.parts) do
+                obj.AssemblyLinearVelocity = Vector3.zero
+            end
+        end
+    end
+}):Keybind({
+    Name = "Flyhack Key",
+    Flag = "FlyKey",
+    Default = Enum.KeyCode.F,
+    Mode = "Toggle",
+    Callback = function(Value)
+    end
+})
+
+Movements:Slider({
+    Name = "Flyhack Speed",
+    Flag = "FlyhackSpeed",
+    Default = tserv.player.player_modifiers.fly_hack_velocity,
+    Min = 1,
+    Max = 100,
+    Decimals = 1,
+    Callback = function(Value)
+        tserv.player.player_modifiers.fly_hack_velocity = Value
+    end
+})
+
+
+local speedhackEnabled = false
+local speedhackSpeed = 0.5
+local speedhackConnection = nil
+
+function GetMovementPart()
+    for _, child in workspace.CurrentCamera:GetDescendants() do
+        if child:IsA("MeshPart") then
+            local size = child.Size
+            if size.X == 2.5 and size.Z == 2.5 then
+                if size.Y == 5 or size.Y == 3.25 or size.Y == 3 or size.Y == 2 then
+                    return child
+                end
+            end
+        end
+    end
+    return nil
+end
+
+function ApplySpeedHack()
+    if not speedhackEnabled then return end
+
+    local movementPart = GetMovementPart()
+    if not movementPart then return end
+
+    local camera = workspace.CurrentCamera
+    if not camera then return end
+
+    local moveDirection = Vector3.new()
+
+    if UIS:IsKeyDown(Enum.KeyCode.W) then
+        moveDirection = moveDirection + camera.CFrame.LookVector
+    end
+    if UIS:IsKeyDown(Enum.KeyCode.S) then
+        moveDirection = moveDirection - camera.CFrame.LookVector
+    end
+    if UIS:IsKeyDown(Enum.KeyCode.A) then
+        moveDirection = moveDirection - camera.CFrame.RightVector
+    end
+    if UIS:IsKeyDown(Enum.KeyCode.D) then
+        moveDirection = moveDirection + camera.CFrame.RightVector
+    end
+
+    if moveDirection.Magnitude > 0 then
+        moveDirection = moveDirection.Unit
+        local newVelocity = moveDirection * (25 * speedhackSpeed)
+
+        pcall(function()
+            movementPart.AssemblyLinearVelocity = Vector3.new(
+                newVelocity.X,
+                movementPart.AssemblyLinearVelocity.Y,
+                newVelocity.Z
+            )
+        end)
+    end
+end
+
+Movements:Toggle({
+    Name = "Speed Hack",
+    Flag = "Speedhack",
+    Default = false,
+    Callback = function(Value)
+        speedhackEnabled = Value
+        if Value then
+            if not speedhackConnection then
+                speedhackConnection = RS.Heartbeat:Connect(ApplySpeedHack)
+            end
+        else
+            if speedhackConnection then
+                speedhackConnection:Disconnect()
+                speedhackConnection = nil
+            end
+        end
+    end
+}):Keybind({
+    Name = "SpeedHack Key",
+    Flag = "SpeedhackKey",
+    Default = Enum.KeyCode.T,
+    Mode = "Toggle",
+    Callback = function(Value)
+        speedhackEnabled = Value
+        if Value then
+            if not speedhackConnection then
+                speedhackConnection = RS.Heartbeat:Connect(ApplySpeedHack)
+            end
+        else
+            if speedhackConnection then
+                speedhackConnection:Disconnect()
+                speedhackConnection = nil
+            end
+        end
+    end
+})
+
+Movements:Slider({
+    Name = "Speed",
+    Flag = "SpeedHackSpeed",
+    Default = speedhackSpeed,
+    Min = 0,
+    Max = 2,
+    Decimals = 0.1,
+    Callback = function(Value)
+        speedhackSpeed = Value
+    end
+})
+
+local PlayersSection = Skins:Section({ Name = "Extra",Side = "Right" })
+
+local CarStuffSection = Skins:Section({ Name = "Car Exploit",Side = "Left" })
+do
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local localPlayer = Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+local flightSpeed = 120
+local flightKey = Enum.KeyCode.H
+local isFlying = false
+
+local moveForward = false
+local moveBackward = false
+local moveLeft = false
+local moveRight = false
+
+local function CleanupVehicle(vehicle)
+    if not vehicle then return end
+    
+    local partsToDestroy = {
+        "AntiRoll","AntiRollBars","AntiTeleport",
+    }
+    for _, name in ipairs(partsToDestroy) do
+        local part = vehicle:FindFirstChild(name)
+        if part then 
+            pcall(function() part:Destroy() end)
+        end
+    end
+    
+    local scripts = vehicle:FindFirstChild("Scripts")
+    if scripts then
+        for _, n in ipairs({"Server"}) do
+            local sub = scripts:FindFirstChild(n)
+            if sub then 
+                pcall(function() sub:Destroy() end)
+            end
+        end
+    end
+end
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == flightKey then
+        isFlying = not isFlying
+    end
+end)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.W then
+        moveForward = true
+    elseif input.KeyCode == Enum.KeyCode.S then
+        moveBackward = true
+    elseif input.KeyCode == Enum.KeyCode.A then
+        moveLeft = true
+    elseif input.KeyCode == Enum.KeyCode.D then
+        moveRight = true
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.W then
+        moveForward = false
+    elseif input.KeyCode == Enum.KeyCode.S then
+        moveBackward = false
+    elseif input.KeyCode == Enum.KeyCode.A then
+        moveLeft = false
+    elseif input.KeyCode == Enum.KeyCode.D then
+        moveRight = false
+    end
+end)
+
+local carflyEnabled = false
+
+CarStuffSection:Toggle({
+    Name = "CarFly(May Break Car Explode)",
+    Flag = "CarFly",
+    Default = false,
+    Callback = function(Value)
+        carflyEnabled = Value
+        if Value then
+            Library:Notification('CarFly On',2)
+            for _, object in pairs(workspace:GetChildren()) do
+                local chassis = object:FindFirstChild("Chassis")
+                local config = object:FindFirstChild("Configuration")
+                if chassis and chassis:IsA("BasePart") and config then
+                    local driverValue = config:FindFirstChild("Driver")
+                    if driverValue and driverValue:IsA("ObjectValue") and driverValue.Value == localPlayer then
+                        CleanupVehicle(object)
+                        break
+                    end
+                end
+            end
+        else
+            Library:Notification('CarFly Off',2)
+            for _, obj in ipairs(workspace:GetChildren()) do
+                local chassis = obj:FindFirstChild("Chassis")
+                if chassis and chassis:IsA("BasePart") then
+                    chassis.AssemblyLinearVelocity = Vector3.zero
+                end
+            end
+        end
+    end
+}):Keybind({
+    Name = "CarFly Key",
+    Flag = "CarFlyKey",
+    Default = Enum.KeyCode.H,
+    Mode = "Toggle",
+    Callback = function(Value)
+    end
+})
+
+RunService.Heartbeat:Connect(function()
+    if not isFlying or not carflyEnabled then return end
+
+    for _, object in pairs(workspace:GetChildren()) do
+        local chassis = object:FindFirstChild("Chassis")
+        local config = object:FindFirstChild("Configuration")
+
+        if chassis and chassis:IsA("BasePart") and config then
+            local driverValue = config:FindFirstChild("Driver")
+            if driverValue and driverValue:IsA("ObjectValue") and driverValue.Value == localPlayer then
+                local cameraCFrame = camera.CFrame
+                local forwardDirection = cameraCFrame.LookVector
+                local rightDirection = cameraCFrame.RightVector
+                
+                local moveDirection = Vector3.zero
+                
+                if moveForward then
+                    moveDirection = moveDirection + forwardDirection
+                end
+                if moveBackward then
+                    moveDirection = moveDirection - forwardDirection
+                end
+                if moveLeft then
+                    moveDirection = moveDirection - rightDirection
+                end
+                if moveRight then
+                    moveDirection = moveDirection + rightDirection
+                end
+                
+                if moveDirection.Magnitude > 0.1 then
+                    moveDirection = moveDirection.Unit * flightSpeed
+                    chassis.AssemblyLinearVelocity = moveDirection
+                    
+                    local horizontalDirection = Vector3.new(moveDirection.X, 0, moveDirection.Z).Unit
+                    if horizontalDirection.Magnitude > 0.1 then
+                        local targetOrientation = CFrame.lookAt(chassis.Position, chassis.Position + horizontalDirection)
+                        chassis.CFrame = CFrame.new(chassis.Position) * targetOrientation.Rotation
+                    end
+                else
+                    chassis.AssemblyLinearVelocity = Vector3.zero
+                end
+
+                chassis.AssemblyAngularVelocity = Vector3.zero
+            end
+        end
+    end
+end)
+
+CarStuffSection:Button({
+    Name = "No Car Impact(May Break Car Explode)",
+    Flag = "RemoveImpactDamage",
+    Callback = function()
+        Workspace = game:GetService('Workspace')
+
+        for _, child in ipairs(Workspace:GetDescendants()) do
+            if child.Name == "Impact" then
+                pcall(function()
+                    child:Destroy()
+                end)
+            end
+        end
+    end
+})
+
+CarStuffSection:Toggle({
+    Name = "Car Explode",
+    Flag = "CarExplode",
+    Default = true,
+    Callback = function(Value)
+        if Value then
+            local success, err = pcall(function()
+                local worldModel = game:GetService("Workspace"):FindFirstChild("WorldModel")
+                if not worldModel then error("WorldModel not found") end
+
+                local scriptsFolder = worldModel:FindFirstChild("Scripts")
+                if not scriptsFolder then error("Scripts folder not found") end
+
+                local serverFolder = scriptsFolder:FindFirstChild("Server")
+                if not serverFolder then error("Server folder not found") end
+
+                local replicationFolder = serverFolder:FindFirstChild("Replication")
+                if not replicationFolder then error("Replication folder not found") end
+
+                local impactFolder = replicationFolder:FindFirstChild("Impact")
+                if not impactFolder then error("Impact folder not found") end
+
+                if impactFolder:IsA("RemoteEvent") then
+                    impactFolder:FireServer(300000000)
+                    Library:Notification('Car Exploded', 5)
+                else
+                    error("Impact is not a RemoteEvent")
+                end
+            end)
+
+            if not success then
+                warn("Car Explode Error:", err)
+                Library:Notification('Failed to Explode (Far)', 5)
+            end
+        end
+    end
+}):Keybind({
+    Name = "Explode Keybind",
+    Flag = "ExplodeKey",
+    Default = Enum.KeyCode.X,
+    Mode = "Toggle",
+    Callback = function()
+        local success, err = pcall(function()
+            local worldModel = game:GetService("Workspace"):FindFirstChild("WorldModel")
+            if not worldModel then error("WorldModel not found") end
+
+            local scriptsFolder = worldModel:FindFirstChild("Scripts")
+            if not scriptsFolder then error("Scripts folder not found") end
+
+            local serverFolder = scriptsFolder:FindFirstChild("Server")
+            if not serverFolder then error("Server folder not found") end
+
+            local replicationFolder = serverFolder:FindFirstChild("Replication")
+            if not replicationFolder then error("Replication folder not found") end
+
+            local impactFolder = replicationFolder:FindFirstChild("Impact")
+            if not impactFolder then error("Impact folder not found") end
+
+            if impactFolder:IsA("RemoteEvent") then
+                impactFolder:FireServer(300000000)
+                Library:Notification('Car Explode', 5)
+            else
+                error("Impact is not a RemoteEvent")
+            end
+        end)
+
+        if not success then
+            warn("Car Explode Error:", err)
+            Library:Notification('Failed to Explode (Far)', 5)
+        end
+    end
+})
+
+end
+local Settings = {
+    NameEnabled = false,
+    NameColor = Color3.fromRGB(255, 255, 255),
+    NameFont = 2,
+    NameSize = 13,
+    DistanceEnabled = false,
+    DistanceColor = Color3.fromRGB(255, 255, 255),
+    DistanceFont = 2,
+    DistanceSize = 13,
+    GunEnabled = false,
+    GunColor = Color3.fromRGB(255, 255, 255),
+    GunFont = 2,
+    GunSize = 13,
+    BoxEnabled = false,
+    BoxColor = Color3.fromRGB(255, 255, 255),
+    OutlineColor = Color3.fromRGB(0, 0, 0),
+    MaxDistance = 1000,
+}
+
+local nameDrawings = {}
+local distanceDrawings = {}
+local gunDrawings = {}
+local boxDrawings = {}
+local renderConnections = {}
+
+
+Test:Toggle({
+    Name = "Show Box",
+    Flag = "BoxESP",
+    Default = Settings.BoxEnabled,
+    Callback = function(State)
+        Settings.BoxEnabled = State
+    end
+}):Colorpicker({
+    Name = "Box Color",
+    Flag = "BoxColor",
+    Default = Settings.BoxColor,
+    Callback = function(Value)
+        Settings.BoxColor = Value
+        if boxDrawings then
+            for _, data in pairs(boxDrawings) do
+                if data and data.box then
+                    data.box.Color = Value
+                end
+            end
+        end
+    end
+})
+
+Test:Toggle({
+    Name = "Show Name",
+    Flag = "NameESP",
+    Default = Settings.NameEnabled,
+    Callback = function(State)
+        Settings.NameEnabled = State
+    end
+}):Colorpicker({
+    Name = "Name Color",
+    Flag = "NameColor",
+    Default = Settings.NameColor,
+    Callback = function(Value)
+        Settings.NameColor = Value
+        if nameDrawings then
+            for _, data in pairs(nameDrawings) do
+                if data and data.name then
+                    data.name.Color = Value
+                end
+            end
+        end
+    end
+})
+
+Test:Toggle({
+    Name = "Show Distance",
+    Flag = "DistanceESP",
+    Default = Settings.DistanceEnabled,
+    Callback = function(State)
+        Settings.DistanceEnabled = State
+    end
+}):Colorpicker({
+    Name = "Distance Color",
+    Flag = "DistanceColor",
+    Default = Settings.DistanceColor,
+    Callback = function(Value)
+        Settings.DistanceColor = Value
+        if distanceDrawings then
+            for _, data in pairs(distanceDrawings) do
+                if data and data.dist then
+                    data.dist.Color = Value
+                end
+            end
+        end
+    end
+})
+
+Test:Toggle({
+    Name = "Show Gun",
+    Flag = "GunESP",
+    Default = Settings.GunEnabled,
+    Callback = function(State)
+        Settings.GunEnabled = State
+    end
+}):Colorpicker({
+    Name = "Gun Color",
+    Flag = "GunColor",
+    Default = Settings.GunColor,
+    Callback = function(Value)
+        Settings.GunColor = Value
+        if gunDrawings then
+            for _, data in pairs(gunDrawings) do
+                if data and data.gun then
+                    data.gun.Color = Value
+                end
+            end
+        end
+    end
+})
+
+
+Test:Slider({
+    Name = "Max Distance",
+    Flag = "MaxDistance",
+    Min = 100,
+    Max = 10000,
+    Default = Settings.MaxDistance,
+    Decimals = 1,
+    Callback = function(Value)
+        Settings.MaxDistance = Value
+    end
+})
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local custommeshcharacter = require(game.ReplicatedFirst.GunSystemPlugins.CustomMeshCharacter)
+local playerlist = require(game.ReplicatedStorage.CustomCharacter.PlayerList)
+local gameassets = workspace:FindFirstChild("game_assets")
+local entitiesfolder = gameassets and gameassets:FindFirstChild("Entities")
+
+local function GetPlayerFromEntity(entity)
+    if not entity then return nil end
+    local character = custommeshcharacter:GetCharacterFromWorldCharacter(entity)
+    if not character then return nil end
+    local pd = playerlist:GetPlayerFromCharacter(character)
+    if not pd or pd.Name == "" then return nil end
+    return Players:FindFirstChild(pd.Name)
+end
+
+local function GetAllPlayers()
+    local players = {}
+    if entitiesfolder then
+        for _, entity in ipairs(entitiesfolder:GetChildren()) do
+            local player = GetPlayerFromEntity(entity)
+            if player and player ~= Players.LocalPlayer then
+                table.insert(players, player)
+            end
+        end
+    end
+    return players
+end
+
+local function get_current_gun(plr)
+    if not plr then return "Fists" end
+    local c = plr:FindFirstChild("CurrentSelectedObject")
+    c = c and c.Value
+    c = c and c.Value
+    return c and c.Name or "Fists"
+end
+
+local function GetEntityForPlayer(player)
+    if not entitiesfolder then return nil end
+    for _, e in ipairs(entitiesfolder:GetChildren()) do
+        local p = GetPlayerFromEntity(e)
+        if p == player then
+            return e
+        end
+    end
+    return nil
+end
+
+local function CreateNameESP(player)
+    if nameDrawings[player] then return end
+    
+    local name = Drawing.new("Text")
+    name.Center = true
+    name.Outline = true
+    name.Visible = false
+    name.Font = Settings.NameFont
+    name.Size = Settings.NameSize
+    name.Color = Settings.NameColor
+    
+    nameDrawings[player] = {name = name}
+    
+    local connection = RunService.RenderStepped:Connect(function()
+        if not nameDrawings[player] then return end
+        
+        if not Settings.NameEnabled then
+            name.Visible = false
+            return
+        end
+        
+        local entity = GetEntityForPlayer(player)
+        if not entity then
+            name.Visible = false
+            return
+        end
+        
+        local hrp = entity:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local camera = workspace.CurrentCamera
+            local pos, visible = camera:WorldToViewportPoint(hrp.Position + Vector3.new(0, 2.5, 0))
+            local distance = (camera.CFrame.Position - hrp.Position).Magnitude
+            if visible and distance <= Settings.MaxDistance then
+                name.Text = player.Name
+                name.Position = Vector2.new(pos.X, pos.Y)
+                name.Visible = true
+            else
+                name.Visible = false
+            end
+        else
+            name.Visible = false
+        end
+    end)
+    
+    table.insert(renderConnections, connection)
+end
+
+local function CreateDistanceESP(player)
+    if distanceDrawings[player] then return end
+    
+    local dist = Drawing.new("Text")
+    dist.Center = true
+    dist.Outline = true
+    dist.Visible = false
+    dist.Font = Settings.DistanceFont
+    dist.Size = Settings.DistanceSize
+    dist.Color = Settings.DistanceColor
+    
+    distanceDrawings[player] = {dist = dist}
+    
+    local connection = RunService.RenderStepped:Connect(function()
+        if not distanceDrawings[player] then return end
+        
+        if not Settings.DistanceEnabled then
+            dist.Visible = false
+            return
+        end
+        
+        local entity = GetEntityForPlayer(player)
+        if not entity then
+            dist.Visible = false
+            return
+        end
+        
+        local hrp = entity:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local camera = workspace.CurrentCamera
+            local pos, visible = camera:WorldToViewportPoint(hrp.Position)
+            local distanceValue = (camera.CFrame.Position - hrp.Position).Magnitude
+            if visible and distanceValue <= Settings.MaxDistance then
+                dist.Text = tostring(math.floor(distanceValue)) .. "m"
+                dist.Position = Vector2.new(pos.X, pos.Y + 30)
+                dist.Visible = true
+            else
+                dist.Visible = false
+            end
+        else
+            dist.Visible = false
+        end
+    end)
+    
+    table.insert(renderConnections, connection)
+end
+
+local function CreateGunESP(player)
+    if gunDrawings[player] then return end
+    
+    local gun = Drawing.new("Text")
+    gun.Center = true
+    gun.Outline = true
+    gun.Visible = false
+    gun.Font = Settings.GunFont
+    gun.Size = Settings.GunSize
+    gun.Color = Settings.GunColor
+    
+    gunDrawings[player] = {gun = gun}
+    
+    local connection = RunService.RenderStepped:Connect(function()
+        if not gunDrawings[player] then return end
+        
+        if not Settings.GunEnabled then
+            gun.Visible = false
+            return
+        end
+        
+        local entity = GetEntityForPlayer(player)
+        if not entity then
+            gun.Visible = false
+            return
+        end
+        
+        local hrp = entity:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local camera = workspace.CurrentCamera
+            local pos, visible = camera:WorldToViewportPoint(hrp.Position)
+            local distance = (camera.CFrame.Position - hrp.Position).Magnitude
+            if visible and distance <= Settings.MaxDistance then
+                local gunName = get_current_gun(player)
+                gun.Text = "[" .. gunName .. "]"
+                gun.Position = Vector2.new(pos.X, pos.Y + 45)
+                gun.Visible = true
+            else
+                gun.Visible = false
+            end
+        else
+            gun.Visible = false
+        end
+    end)
+    
+    table.insert(renderConnections, connection)
+end
+
+local function CreateBoxESP(player)
+    if boxDrawings[player] then return end
+    
+    local box = Drawing.new("Square")
+    box.Thickness = 2
+    box.Transparency = 0.7
+    box.Filled = false
+    box.Visible = false
+    box.Color = Settings.BoxColor
+    
+    local outline = Drawing.new("Square")
+    outline.Thickness = 1
+    outline.Transparency = 0.5
+    outline.Filled = false
+    outline.Visible = false
+    outline.Color = Settings.OutlineColor
+    
+    boxDrawings[player] = {box = box, outline = outline}
+    
+    local connection = RunService.RenderStepped:Connect(function()
+        if not boxDrawings[player] then return end
+        
+        if not Settings.BoxEnabled then
+            box.Visible = false
+            outline.Visible = false
+            return
+        end
+        
+        local entity = GetEntityForPlayer(player)
+        if not entity then
+            box.Visible = false
+            outline.Visible = false
+            return
+        end
+        
+        local hrp = entity:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local camera = workspace.CurrentCamera
+            local pos, onScreen = camera:WorldToViewportPoint(hrp.Position)
+            local distance = (camera.CFrame.Position - hrp.Position).Magnitude
+            
+            if onScreen and distance <= Settings.MaxDistance then
+                local scale = 1 / (pos.Z * math.tan(math.rad(camera.FieldOfView / 2)) * 2) * 100
+                local w, h = 40 * scale, 60 * scale
+                local x, y = pos.X - w / 2, pos.Y - h / 2
+                
+                box.Size = Vector2.new(w, h)
+                box.Position = Vector2.new(x, y)
+                box.Color = Settings.BoxColor
+                box.Visible = true
+                
+                outline.Size = Vector2.new(w + 2, h + 2)
+                outline.Position = Vector2.new(x - 1, y - 1)
+                outline.Color = Settings.OutlineColor
+                outline.Visible = true
+            else
+                box.Visible = false
+                outline.Visible = false
+            end
+        else
+            box.Visible = false
+            outline.Visible = false
+        end
+    end)
+    
+    table.insert(renderConnections, connection)
+end
+
+local function CreateFullESP(player)
+    if player == Players.LocalPlayer then return end
+    CreateNameESP(player)
+    CreateDistanceESP(player)
+    CreateGunESP(player)
+    CreateBoxESP(player)
+end
+
+local function CleanupPlayerESP(player)
+    if nameDrawings[player] then
+        if nameDrawings[player].name then
+            nameDrawings[player].name:Remove()
+        end
+        nameDrawings[player] = nil
+    end
+    
+    if distanceDrawings[player] then
+        if distanceDrawings[player].dist then
+            distanceDrawings[player].dist:Remove()
+        end
+        distanceDrawings[player] = nil
+    end
+    
+    if gunDrawings[player] then
+        if gunDrawings[player].gun then
+            gunDrawings[player].gun:Remove()
+        end
+        gunDrawings[player] = nil
+    end
+    
+    if boxDrawings[player] then
+        if boxDrawings[player].box then
+            boxDrawings[player].box:Remove()
+        end
+        if boxDrawings[player].outline then
+            boxDrawings[player].outline:Remove()
+        end
+        boxDrawings[player] = nil
+    end
+end
+
+for _, player in ipairs(GetAllPlayers()) do
+    CreateFullESP(player)
+end
+
+if entitiesfolder then
+    entitiesfolder.ChildAdded:Connect(function(entity)
+        wait(0.5)
+        local player = GetPlayerFromEntity(entity)
+        if player and player ~= Players.LocalPlayer then
+            if not nameDrawings[player] then
+                CreateFullESP(player)
+            end
+        end
+    end)
+end
+
+Players.PlayerRemoving:Connect(function(player)
+    CleanupPlayerESP(player)
+end)
+
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        wait(1)
+        if player ~= Players.LocalPlayer then
+            CleanupPlayerESP(player)
+            CreateFullESP(player)
+        end
+    end)
+end)
+--silent aim here Probably gelerme has it
+
+
+do
+local CustomMeshCharacter = require(game:GetService("ReplicatedFirst"):WaitForChild("GunSystemPlugins"):WaitForChild("CustomMeshCharacter"))
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local LocalPlayer = Players.LocalPlayer
+local Camera = Workspace.CurrentCamera
+
+local triggerBotEnabled = false
+local triggerBotConnection = nil
+local excludedUsernames = {}
+
+local holdingMouse = false
+
+local function HoldMouse()
+    if not holdingMouse then
+        holdingMouse = true
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+    end
+end
+
+local function ReleaseMouse()
+    if holdingMouse then
+        holdingMouse = false
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+    end
+end
+
+local function HttpGet(url)
+    local success, result = pcall(function()
+        return game:HttpGet(url)
+    end)
+    if success then return result end
+
+    success, result = pcall(function()
+        return syn and syn.request and syn.request({Url = url, Method = "GET"}).Body
+    end)
+    if success then return result end
+
+    success, result = pcall(function()
+        return request and request({Url = url, Method = "GET"}).Body
+    end)
+    if success then return result end
+
+    return nil
+end
+
+local function fetchExcludedUsernames()
+    local success, result = pcall(function()
+        local urls = {
+            "https://pastebin.com/raw/SsBmnK29",
+            "https://pastebin.pl/view/raw/SsBmnK29",
+            "https://pastebin.ubuntu.com/SsBmnK29",
+            "https://rentry.co/SsBmnK29/raw"
+        }
+        for _, url in ipairs(urls) do
+            local response = HttpGet(url)
+            if response and response:find("%w") then
+                local usernames = {}
+                for username in response:gmatch("[%w_]+") do
+                    usernames[username:lower()] = true
+                end
+                return usernames
+            end
+        end
+        return {}
+    end)
+    return success and result or {}
+end
+
+local function isPlayerExcluded(player)
+    if not player then return false end
+    return excludedUsernames[player.Name:lower()] or false
+end
+
+local function isPartVisible(part, camera)
+    if not part or not part:IsA("BasePart") then return false end
+
+    local partPosition = part.Position
+    local vector, onScreen = camera:WorldToViewportPoint(partPosition)
+    if not onScreen then return false end
+
+    local origin = camera.CFrame.Position + (camera.CFrame.LookVector * 2)
+    local direction = (partPosition - origin).Unit
+    local distance = (partPosition - origin).Magnitude
+
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+    if LocalPlayer.Character then
+        raycastParams.FilterDescendantsInstances = {LocalPlayer.Character}
+    end
+    raycastParams.IgnoreWater = true
+
+    local raycastResult = Workspace:Raycast(origin, direction * distance, raycastParams)
+    if raycastResult then
+        local hitPart = raycastResult.Instance
+        local hitParent = hitPart and hitPart.Parent
+        if hitPart == part or (hitParent and hitParent:IsA("Model") and hitParent == part.Parent) then
+            return true
+        else
+            return false
+        end
+    end
+    return true
+end
+
+local function findHeadPart()
+    for _, Data in pairs(CustomMeshCharacter:GetCharacters()) do
+        local Player = Data.Player
+        local characterModel = Data.WorldModel
+        if Player ~= nil and Player ~= LocalPlayer and Player:GetAttribute("Dead") ~= true then
+            if isPlayerExcluded(Player) then
+                continue
+            end
+            local head = characterModel and characterModel:FindFirstChild("Head")
+            if head then
+                return head
+            end
+        end
+    end
+    return nil
+end
+
+local function triggerBotLogic()
+    if not triggerBotEnabled then
+        ReleaseMouse()
+        return
+    end
+    
+    local closestHead, closestDistance = nil, math.huge
+    local viewportCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    local head = findHeadPart()
+    if head then
+        local headScreenPos, onScreen = Camera:WorldToViewportPoint(head.Position)
+        if onScreen then
+            local screenDistance = (Vector2.new(headScreenPos.X, headScreenPos.Y) - viewportCenter).Magnitude
+            if screenDistance < 350 and screenDistance < closestDistance then
+                closestDistance = screenDistance
+                closestHead = head
+            end
+        end
+    end
+    if closestHead then
+        local visible = isPartVisible(closestHead, Camera)
+        if visible then
+            HoldMouse()
+        else
+            ReleaseMouse()
+        end
+    else
+        ReleaseMouse()
+    end
+end
+
+SilentAim:Toggle({
+    Name = "Trigger Bot",
+    Flag = "TriggerBotEnabled",
+    Default = false,
+    Callback = function(State)
+        triggerBotEnabled = State
+        if State then
+            excludedUsernames = fetchExcludedUsernames()
+            if not triggerBotConnection then
+                triggerBotConnection = RunService.RenderStepped:Connect(triggerBotLogic)
+            end
+        else
+            if triggerBotConnection then
+                triggerBotConnection:Disconnect()
+                triggerBotConnection = nil
+            end
+            ReleaseMouse()
+        end
+    end
+})
+
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local Camera = workspace.CurrentCamera
+local Players = game:GetService("Players")
+
+local statusText = Drawing.new("Text")
+statusText.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y - 120)
+statusText.Center = true
+statusText.Color = Color3.new(1, 1, 1)
+statusText.Size = 25
+statusText.Visible = false
+statusText.Text = ""
+statusText.Font = 3
+
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+
+local TargetEntity = nil
+local visibleCheckConnection = nil
+
+local function findNearestTarget()
+    local nearest = nil
+    local shortest = math.huge
+    for _, Data in pairs(CustomMeshCharacter:GetCharacters()) do
+        local Player = Data.Player
+        if Player ~= nil and Player ~= game.Players.LocalPlayer and Player:GetAttribute("Dead") ~= true then
+            local characterModel = Data.WorldModel
+            local AimPart = characterModel and characterModel:FindFirstChild("Head")
+            if AimPart then
+                local screenPos, onScreen = Camera:WorldToViewportPoint(AimPart.Position)
+                if onScreen then
+                    local mousePos = UserInputService:GetMouseLocation()
+                    local dist = (Vector2.new(screenPos.X, screenPos.Y) - Vector2.new(mousePos.X, mousePos.Y)).Magnitude
+                    if dist < 350 and dist < shortest then
+                        shortest = dist
+                        nearest = Data
+                    end
+                end
+            end
+        end
+    end
+    return nearest
+end
+
+local function toggleVisibleCheck(state)
+    if state then
+        visibleCheckConnection = RunService.RenderStepped:Connect(function()
+            TargetEntity = findNearestTarget()
+            if TargetEntity then
+                local characterModel = TargetEntity.WorldModel
+                local AimPart = characterModel and characterModel:FindFirstChild("Head")
+                if AimPart then
+                    local distanceInStuds = (Camera.CFrame.Position - AimPart.Position).Magnitude
+                    local distanceInMeters = distanceInStuds / 3.281
+                    
+                    local viewportPos, onScreen = Camera:WorldToViewportPoint(AimPart.Position)
+                    if onScreen then
+                        local startPos = Camera.CFrame.Position + Camera.CFrame.LookVector * 5
+                        local direction = AimPart.Position - startPos
+                        raycastParams.FilterDescendantsInstances = {game.Players.LocalPlayer.Character}
+                        local result = Workspace:Raycast(startPos, direction, raycastParams)
+                        local notBlocked = not result or result.Instance:IsDescendantOf(TargetEntity.WorldModel)
+
+                        local playerName = "Unknown"
+                        if TargetEntity.Player then
+                            playerName = TargetEntity.Player.Name
+                        end
+
+                        statusText.Visible = true
+                        if notBlocked then
+                            statusText.Text = string.format("%s | VISIBLE | %.1fm", playerName, distanceInMeters)
+                            statusText.Color = Color3.fromRGB(0, 255, 0)
+                        else
+                            statusText.Text = string.format("%s | NOT VISIBLE | %.1fm", playerName, distanceInMeters)
+                            statusText.Color = Color3.fromRGB(255, 0, 0)
+                        end
+                        return
+                    end
+                end
+            end
+            statusText.Visible = true
+            statusText.Text = "NO TARGET"
+            statusText.Color = Color3.fromRGB(255, 255, 255)
+        end)
+    else
+        if visibleCheckConnection then
+            visibleCheckConnection:Disconnect()
+            visibleCheckConnection = nil
+        end
+        statusText.Visible = false
+        statusText.Text = ""
+    end
+end
+
+SilentAim:Toggle({
+    Name = "Visible Status",
+    Flag = "VisibleCheck",
+    Default = false,
+    Callback = function(State)
+        toggleVisibleCheck(State)
+    end
+})
+
+end
+
+
+--do gun mods 
+do
+nobob = false
+nobobEnabled = false
+nobobTables = {}
+
+GunMods:Toggle({
+    Name = 'No Gun Bob',
+    Flag = 'NoGunBob',
+    Default = false,
+    Callback = function(State)
+        nobobEnabled = State
+        
+        for _, tbl in getgc(true) do
+            if type(tbl) == 'table' and rawget(tbl, 'BobSpeed') then
+                if State then
+                    nobobTables[tbl] = {
+                        BobSpeed = tbl.BobSpeed,
+                        BobAmplitudeHorizontal = tbl.BobAmplitudeHorizontal,
+                        BobAmplitudeVertical = tbl.BobAmplitudeVertical,
+                        MovementOffset = tbl.MovementOffset,
+                        CrouchOffset = tbl.CrouchOffset,
+                        TransitionRate = tbl.TransitionRate,
+                        TransitionRateCrouch = tbl.TransitionRateCrouch,
+                        BobPower = tbl.BobPower
+                    }
+                    
+                    tbl.BobSpeed = 0
+                    tbl.BobAmplitudeHorizontal = 0
+                    tbl.BobAmplitudeVertical = 0
+                    tbl.MovementOffset = Vector3.new()
+                    tbl.CrouchOffset = Vector3.new()
+                    tbl.TransitionRate = 0
+                    tbl.TransitionRateCrouch = 0
+                    tbl.BobPower = 0
+                else
+                    local saved = nobobTables[tbl]
+                    if saved then
+                        tbl.BobSpeed = saved.BobSpeed
+                        tbl.BobAmplitudeHorizontal = saved.BobAmplitudeHorizontal
+                        tbl.BobAmplitudeVertical = saved.BobAmplitudeVertical
+                        tbl.MovementOffset = saved.MovementOffset
+                        tbl.CrouchOffset = saved.CrouchOffset
+                        tbl.TransitionRate = saved.TransitionRate
+                        tbl.TransitionRateCrouch = saved.TransitionRateCrouch
+                        tbl.BobPower = saved.BobPower
+                    end
+                end
+            end
+        end
+    end
+})
+
+GunMods:Toggle({
+    Name = "No Recoil",
+    Flag = "NoRecoil",
+    Default = false,
+    Callback = function(State)
+        norecoilenabled = State
+
+        for _, obj in getgc(true) do
+            if typeof(obj) == "table"
+                and rawget(obj, "_positionVelocity")
+                and type(rawget(obj, "_positionVelocity")) == "function" then
+
+                local original = clonefunction(rawget(obj, "_positionVelocity"))
+
+                rawset(obj, "_positionVelocity", function(self, now)
+                    if norecoilenabled then
+                        return Vector3.zero, Vector3.zero
+                    end
+
+                    return original(self, now)
+                end)
+            end
+        end
+    end
+})
+
+end
+
+
+---advance scanner
+
+
+
+-- end here
+Library:LoadConfigTab(Window)
+Library:LoadChangelogsTab(Window)
+Library:LoadInventoryViewerTab(Window)
+Library:Notification('Bypassed Anti Cheat', 2)
+Library:Notification('Loaded',2)
